@@ -1,0 +1,57 @@
+include ../config.mk
+
+CUDA_DIR = /usr/local/cuda
+CUDA_LIB_DIR := $(CUDA_DIR)/lib
+CC := $(CUDA_DIR)/bin/nvcc
+CFLAGS		:= -std=c++11
+LFLAGS		:= -lParrot
+HEADERS     := src
+INCLUDE 	:= -I${ANALOG_INC} -I${FANN_INC} -I${HEADERS}
+LIB			:= -L${ANALOG_LIB} -L${FANN_LIB} -L$(PARROT_LIB)
+
+INCLUDE_BIN := $(CUDA_DIR)/include
+
+# Example
+# target: dependencies
+	# command 1
+	# command 2
+          # .
+          # .
+          # .
+	# command n
+
+# link objects(binaries) together
+a.out:	DIR ./obj/main_nn.o
+	$(CC)	./obj/main_nn.o \
+				-I$(INCLUDE_BIN) \
+				-L$(CUDA_LIB_DIR)  \
+				-lm -lcuda -lcudart -o ./bin/srad_nn.out
+
+DIR:
+	@echo ${CPP_FILES}
+	@echo ${OBJ_FILES}
+	if [ ! -d "./bin" ];then 	\
+		mkdir bin;				\
+	fi
+	if [ ! -d "./obj" ];then 	\
+		mkdir obj;				\
+	fi
+
+# compile main function file into object (binary)
+./obj/main_nn.o: 	./src.nn/main_nn.cu \
+				./src.nn/define_nn.c \
+				./src.nn/graphics_nn.c \
+				./src.nn/extract_kernel_nn.cu \
+				./src.nn/prepare_kernel_nn.cu \
+				./src.nn/reduce_kernel_nn.cu \
+				./src.nn/srad2_kernel_nn.cu \
+				./src.nn/compress_kernel_nn.cu
+	nvcc	./src.nn/main_nn.cu \
+				$(CFLAGS) $(INCLUDE) -I$(NVIDIA_HELPER) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -I$(PARROT_LIB) -c -O3 -arch sm_13 -o ./obj/main_nn.o
+
+
+# delete all object files
+clean:
+	rm ./bin/srad_nn.out
+	rm ./obj/main_nn.o
+

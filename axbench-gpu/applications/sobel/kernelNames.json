@@ -1,0 +1,10 @@
+{
+    "computeSobel": {
+        "InputRangeA": 0.0, 
+        "InputRangeB": 0.0, 
+        "OutputRangeA": 0.0, 
+        "OutputRangeB": 1.0, 
+        "nInputs": "9", 
+        "nOutputs": "1"
+    }
+}
