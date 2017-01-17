@@ -1,8 +1,0 @@
-{
-	"learning_rate": "0.5",
-	"epoch_number": "10",
-	"sampling_rate": "0.05",
-	"test_data_fraction": "0.5",
-	"max_layer_num": "3",
-	"max_neuron_num_per_layer": "2"
-}
