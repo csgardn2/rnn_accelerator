@@ -3,7 +3,7 @@ EXENAME=heat_visualizer
 COMPILEFLAGS=-Wall -Wextra -ansi -Wfatal-errors -std=c++11
 LINKFLAGS=-Wall -Wextra -ansi -Wfatal-errors
 LIBS=-lpng
-ARGS=output.out output.png 512 512
+ARGS=temp_512 output.png
 
 all: documentation $(EXENAME)
 

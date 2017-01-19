@@ -22,9 +22,9 @@ float triangle(float x, float min, float max)
     if (normalized < 0.0f || normalized > 1.0f)
         return 0.0f;
     else if (normalized < 0.5f)
-        return x;
+        return 2.0f * normalized;
     else
-        return 1.0f - normalized;
+        return 2.0f * (1.0f - normalized);
     
 }
 
@@ -35,26 +35,25 @@ color_t pick_color(float temperature, float min_temperature, float max_temperatu
 {
     
     float range = max_temperature - min_temperature;
-    float interpolation_endpoint_1 = min_temperature + range * 0.25;
-    float interpolation_endpoint_2 = min_temperature + range * 0.5;
-    float interpolation_endpoint_3 = min_temperature + range * 0.75;
-    float interpolation_endpoint_4 = min_temperature + range * 1.25;
+    float interpolation_endpoint_0 = min_temperature;
+    float interpolation_endpoint_1 = min_temperature + range * 0.1667;
+    float interpolation_endpoint_2 = min_temperature + range * 0.3333;
+    float interpolation_endpoint_3 = min_temperature + range * 0.5;
+    float interpolation_endpoint_4 = min_temperature + range * 0.6667;
+    float interpolation_endpoint_5 = min_temperature + range * 0.8333;
+    float interpolation_endpoint_6 = max_temperature;
+    float interpolation_endpoint_7 = min_temperature + range * 1.1667;
     
-    float white =
-        triangle(temperature, interpolation_endpoint_3, interpolation_endpoint_4);
-    float red =
-        triangle(temperature, interpolation_endpoint_2, max_temperature)
-      + white;
-    float green =
-        triangle(temperature, interpolation_endpoint_1, interpolation_endpoint_3)
-      + white;
-    float blue =
-        triangle(temperature, min_temperature, interpolation_endpoint_2)
-      + white;
+    float blue   = triangle(temperature, interpolation_endpoint_0, interpolation_endpoint_2);
+    float cyan   = triangle(temperature, interpolation_endpoint_1, interpolation_endpoint_3);
+    float green  = triangle(temperature, interpolation_endpoint_2, interpolation_endpoint_4);
+    float yellow = triangle(temperature, interpolation_endpoint_3, interpolation_endpoint_5);
+    float red    = triangle(temperature, interpolation_endpoint_4, interpolation_endpoint_6);
+    float white  = triangle(temperature, interpolation_endpoint_5, interpolation_endpoint_7);
     
-    signed cast_red = signed(red * 256.0f);
-    signed cast_green = signed(green * 256.0f);
-    signed cast_blue = signed(blue * 256.0f);
+    signed cast_red = signed((yellow + red + white) * 256.0f);
+    signed cast_green = signed((cyan + green + yellow + white) * 256.0f);
+    signed cast_blue = signed((blue + cyan + white) * 256.0f);
     
     color_t ret;
     
