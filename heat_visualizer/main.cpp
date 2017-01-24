@@ -31,7 +31,7 @@ int main(int argc, char** argv)
             << argv[0]
             << " takes 2 or 4 arguments\nUsage: "
             << argv[0]
-            << " <temperature_file> <output.png> [width] [height]\n";
+            << " <temperature_file> <output.png> [min_heat] [max_heat]\n";
         return -1;
     }
     
@@ -83,86 +83,85 @@ int main(int argc, char** argv)
         
     }
     
-    // Try to get the width and height as command line parameters
-    unsigned width;
-    unsigned height;
+    // Try to infer heat map dimensions from the input file size
+    unsigned side_length = std::sqrt(linear_size);
+    if ((side_length + 1) * (side_length + 1) == linear_size)
+    {
+        // Tolerate floating-point rounding errors
+        side_length++;
+    } else if (side_length > 0 && (side_length - 1) * (side_length - 1) == linear_size) {
+        // Tolerate floating-point rounding errors
+        side_length--;
+    } else if (side_length * side_length != linear_size) {
+        std::cerr
+            << "Error.  Could not auto-detect heat map dimensions because the "
+            << linear_size
+            << " elements in \""
+            << argv[1]
+            << "\" are not a perfect square.\n";
+        return -1;
+    }
+    
+    std::cout
+        << "Auto-detected heat map dimensions "
+        << side_length
+        << " x "
+        << side_length
+        << ".\n";
+    
+    // Generate the output image for the heat map
+    float min_temperature;
+    float max_temperature;
+    
     if (argc == 5)
     {
         
-        width = atoi(argv[3]);
-        height = atoi(argv[4]);
+        min_temperature = atof(argv[3]);
+        max_temperature = atof(argv[4]);
         
-        if (linear_size != width * height)
+        if (std::isnan(min_temperature))
         {
             std::cerr
-                << "Error.  The dimensions you passed "
-                << width
-                << " x "
-                << height
-                << " = "
-                << width * height
-                << " does not match the number of elements "
-                << linear_size
-                << " read from temperature file \""
-                << argv[1]
-                << "\".\n";
+                << "Error.  Min temperature \""
+                << argv[3]
+                << "\" is not a valid floating point value";
+            return -1;
+        }
+        if (std::isnan(max_temperature))
+        {
+            std::cerr
+                << "Error.  Max temperature \""
+                << argv[4]
+                << "\" is not a valid floating point value";
+            return -1;
+        }
+        if (min_temperature >= max_temperature)
+        {
+            std::cerr << "Error.  Max temperature must be greater than min temperature\n";
             return -1;
         }
         
     } else {
         
-        // Dimensions not passed as parameters.  Try to infer from the input
-        // file size
-        unsigned side_length = std::sqrt(linear_size);
-        if (side_length * side_length == linear_size)
-        {
-            width = side_length;
-            height = side_length;
-        } else if ((side_length + 1) * (side_length + 1) == linear_size) {
-            // Tolerate floating-point rounding errors
-            width = side_length + 1;
-            height = side_length + 1;
-        } else if (side_length > 0 && (side_length - 1) * (side_length - 1) == linear_size) {
-            // Tolerate floating-point rounding errors
-            width = side_length - 1;
-            height = side_length - 1;
-        } else {
-            std::cerr
-                << "Error.  Could not auto-detect heat map dimensions because the "
-                << linear_size
-                << " elements in \""
-                << argv[1]
-                << "\" are not a perfect square.\n";
-            return -1;
-        }
+        min_temperature = min(heat_map);
+        max_temperature = max(heat_map);
         
         std::cout
-            << "Auto inferred a square heat map of dimensions "
-            << width
-            << " x "
-            << height
-            << ".\n";
+            << "Auto-detected min temperature (black) = " << min_temperature << '\n'
+            << "Auto-detected min temperature (white) = " << max_temperature << '\n';
         
     }
     
-    // Generate the output image for the heat map
-    float min_temperature = min(heat_map);
-    float max_temperature = max(heat_map);
-    std::cout
-        << "Min Temperature (black) = " << min_temperature << '\n'
-        << "Max Temperature (white) = " << max_temperature << '\n';
-    
-    
-    png_t encoder(false, width, height);
-    for (unsigned iy = 0; iy < height; iy++)
+    png_t encoder(false, side_length, side_length);
+    for (unsigned iy = 0; iy < side_length; iy++)
     {
         
-        unsigned offset = iy * width;
+        unsigned offset = iy * side_length;
         const float* temperature_row = heat_map.data() + offset;
         unsigned char* red_row = encoder.get_red() + offset;
         unsigned char* green_row = encoder.get_green() + offset;
         unsigned char* blue_row = encoder.get_blue() + offset;
-        for (unsigned ix = 0; ix < width; ix++)
+        for (unsigned ix = 0; ix < side_length; ix++)
         {
             
             color_t cur_pixel = pick_color(temperature_row[ix], min_temperature, max_temperature);
