@@ -34,6 +34,11 @@ float triangle(float x, float min, float max)
 color_t pick_color(float temperature, float min_temperature, float max_temperature)
 {
     
+    if (temperature < min_temperature)
+        return color_t(0, 0, 0);
+    if (temperature > max_temperature)
+        return color_t(255, 255, 255);
+    
     float range = max_temperature - min_temperature;
     float interpolation_endpoint_0 = min_temperature;
     float interpolation_endpoint_1 = min_temperature + range * 0.1667;
