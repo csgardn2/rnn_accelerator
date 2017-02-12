@@ -6,23 +6,39 @@ feed-forward neural network
 '''
 import tensorflow as tf
 
-def generate_placeholder(num_in, num_gold, batch_size, type_in, type_gold):
+def generate_placeholder(num_data, batch_size, type_in, type_gold):
     '''generate placeholder for inputs and golden output
 
     Args:
-        num_in: number of inputs
-        num_gold: number of golden outputs (same size as output)
+        num_in: number of data
         batch_size: batch size
-        type_in: type of inputs, eg. tf.float32
+        type_in: type of inputs, e.g. float
         type_gold: type of outputs
 
     Returns:
         input_pl: input placeholder
         golden_pl: output placeholder
     '''
-
-    input_pl = tf.placeholder(type_in, shape=(batch_size, num_in))
-    golden_pl = tf.placeholder(type_out, shape=(batch_size, num_gold))
+    # type
+    assert(type_in == "int" or type_in == "float" or type_in == "double")
+    assert(type_gold == "int" or type_gold == "float" or type_gold == "double")
+    if type_in == "int":
+        type_in_tf = tf.int32
+    elif type_in == "float":
+        type_in_tf = tf.float32
+    else:
+        type_in_tf = tf.float64
+    if type_gold == "int":
+        type_gold_tf = tf.int32
+    elif:
+        type_gold_tf = tf.float32
+    else:
+        type_gold_tf = tf.float64
+    # placeholder
+    input_pl = tf.placeholder(type_in_tf,
+            shape=(batch_size, num_in))
+    golden_pl = tf.placeholder(type_out,
+            shape=(batch_size, num_gold))
     return input_pl, golden_pl
 
 def fill_feed_dict(data_set, input_pl, golden_pl, batch_size):

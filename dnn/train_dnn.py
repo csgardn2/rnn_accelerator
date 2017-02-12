@@ -9,19 +9,21 @@ import tensorflow as tf
 import util
 # import benchmark and corresponding dataset
 import dataset
-import hotspot_dnn.hotspot as bm
+import hotspot.hotspot as bm # TODO
 
 FLAGS = None
 
 def run_training():
     '''train the Neural Network'''
-    # import the dataset TODO
-    data_sets, num_in, num_gold, type_in, type_gold = dataset.read_data(FLAGS.input_data_dir, FLAGS.output_data_dir)
+    # import the dataset
+    data_sets = dataset.datasets(FLAGS.data_dir, FLAGS.separate_file,
+            FLAGS.input_data_type, FLAGS.output_data_type)
 
     with tf.Graph().as_default():
         # placeholder TODO
         input_pl, golden_pl = util.generate_placeholder(
-                num_in, num_gold, FLAGS.batch_size,
+                len(data_sets.train.input_data),
+                FLAGS.batch_size,
                 type_in, type_gold
                 )
         # build graph
@@ -86,10 +88,12 @@ def run_training():
                 util.do_eval(sess, error,
                         input_pl, golden_pl,
                         FLAGS.batch_size, data_sets.validate)
-                print('test data evaluation')
-                util.do_eval(sess, error,
-                        input_pl, golden_pl,
-                        FLAGS.batch_size, data_sets.test)
+
+        # final accuracy
+        print('test data evaluation')
+        util.do_eval(sess, error,
+        input_pl, golden_pl,
+        FLAGS.batch_size, data_sets.test)
 
 def main(_):
     run_training()
@@ -147,7 +151,7 @@ if __name__ == '__main__':
             help='type of output data, choose from "int", "float", "double"'
     )
     parser.add_argument(
-            '--separate-file',
+            '--separate_file',
             type=bool,
             default=False,
             help='indicates whether training, validation, testing data are in separate files'
@@ -155,7 +159,7 @@ if __name__ == '__main__':
     parser.add_argument(
             '--log_dir',
             typr=str,
-            default='/home/cosine/research/rnn_accelerator/hotspot_dnn/log'
+            default='/home/cosine/research/rnn_accelerator/dnn/hotspot/log'
             help='Directory to put the log data'
     )
 
