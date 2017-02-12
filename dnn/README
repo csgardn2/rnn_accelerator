@@ -1,0 +1,22 @@
+This directory is for training DNN.
+
+
+For generating new benchmark:
+1. $ mkdir <benchmark>
+2. $ cd <benchmark>
+3. Write <benchmark>.py to specify the loss and error functions.
+4. $ mkdir data
+5. $ cd data
+6. Put the data files in here with file names "input.txt" "golden.txt"
+   - If training, validation, and testing data are in separate files,
+     please name the files "train_input.txt" "validate_input.txt" ...
+   - The format should be
+     number of data sets
+     data set 1
+     data set 2
+     ...
+
+
+Specifying scripts for separate benchmark:
+*separate_file
+*in_dir

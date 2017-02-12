@@ -1,3 +1,0 @@
-now generating general training file
-for each benchmark (dataset), we have to implement the following functions:
-    next_batch?
