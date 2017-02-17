@@ -1,0 +1,18 @@
+2/17
+$ python train_dnn.py --hidden1=0 --learning_rate=0.0001
+accuracy: 96%
+
+$ python train_dnn.py --hidden1=2 --learning_rate=0.01
+accuracy: 30%
+$ python train_dnn.py --hidden1=2 --learning_rate=0.05
+accuracy: -13% (accuracy goes up and down again)
+$ python train_dnn.py --hidden1=2 --learning_rate=0.025
+accuracy: 39% (accuracy goes up and down again)
+$ python train_dnn.py --hidden1=2 --learning_rate=0.04
+accuracy: -0.6%
+$ python train_dnn.py --hidden1=2 --learning_rate=0.02
+accuracy: 5% (stays the same)
+$ python train_dnn.py --hidden1=2 --learning_rate=0.015
+accuracy: 22%
+$ python train_dnn.py --hidden1=2 --learning_rate=0.009
+accuracy: 26%

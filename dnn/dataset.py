@@ -1,14 +1,14 @@
 from random import shuffle
 
-class dataset:
+class Dataset:
     '''individual data sets
     Data member:
         input_data: 2-dimensional input data
         golden_data: 2-dimensional corresponding output golden data
         num_touched: indicates the number of touched data
     '''
-    input_data
-    golden_data
+#    input_data
+#    golden_data
     num_touched = 0
 
     def __init__(self, in_data, gold_data):
@@ -25,9 +25,11 @@ class dataset:
             in_frac: the untouched fraction of input data with size batch_size
             gold_frac: the untouched fraction of output golden data with size batch_size
         '''
-        in_frac = input_data[num_touched:num_touched+batch_size]
-        gold_frac = golden_datap[num_touched:num_touched+batch_size]
-        num_touched += batch_size
+        in_frac = self.input_data[self.num_touched:self.num_touched+batch_size]
+        gold_frac = self.golden_data[self.num_touched:self.num_touched+batch_size]
+        self.num_touched += batch_size
+        #debug
+        #print self.num_touched
         return in_frac, gold_frac
 
     def max_steps(self, batch_size):
@@ -40,24 +42,37 @@ class dataset:
             steps_per_epoch: max steps of training/validation/testing
             num_ex: number of examples can be used
         '''
-        steps_per_epoch = len(input_data) / batch_size
+        steps_per_epoch = len(self.input_data) // batch_size
+        #debug
+        #print "number of input data"
+        #print len(self.input_data)
+        #print "max steps"
+        #print steps_per_epoch
         num_ex = steps_per_epoch * batch_size
         return num_ex, steps_per_epoch
 
+    def reset_touched(self):
+        self.num_touched = 0
+'''
+    def get_data_size(self):
+        return len(self.input_data)
+'''
 
-class datasets:
+class Datasets:
     '''whole data sets. gathering training, validation and testing data
 
     Data members:
         train: training data, type: dataset
         validate: validation data, type: dataset
         test: testing data, type: dataset
+        num_in_neuron: number of input neurons
+        num_out_neuron: number of output neurons
     '''
-    train
-    validate
-    test
+#    train
+#    validate
+#    test
 
-    def __init__(self, data_dir, separate, type_in, type_gold):
+    def __init__(self, data_dir, separate, type_input, type_golden):
         '''initialize training, validation, and testing data
         Args:
             data_dir: directory of data
@@ -65,19 +80,37 @@ class datasets:
             type_in: type of input data
             type_gold: type of golden data
         '''
+        if type_input == 'float':
+            type_in = float
+        else:
+            type_in = int
+        if type_golden == 'float':
+            type_gold = float
+        else:
+            type_gold = int
+
+
         if not separate:
             # import input file
             inFile = open(data_dir + 'input.txt')
             num_in = int(inFile.readline())
             input_data = [ [type_in(i) for i in inputs.split(', ')]
                     for inputs in inFile.readlines() ]
+            self.num_in_neuron = len(input_data[0])
             assert(num_in == len(input_data))
+            #debug
+            #print "num_in"
+            #print num_in
             # import golden file
             goldFile = open(data_dir + 'golden.txt')
             num_gold = int(goldFile.readline())
             golden_data = [ [type_gold(i) for i in goldens.split(', ')]
                     for goldens in goldFile.readlines() ]
+            self.num_out_neuron = len(golden_data[0])
             assert(num_gold == len(golden_data))
+            #debug
+            #print "num_gold"
+            #print num_gold
             # shuffle
             assert(num_in == num_gold)
             indices_shuffle = range(num_in)
@@ -88,11 +121,11 @@ class datasets:
             train_size = int(float(num_in) * 0.7)
             validate_size = int(float(num_in) * 0.2)
             test_offset = train_size + validate_size
-            self.train = dataset(input_shuffle[0:train_size],
+            self.train = Dataset(input_shuffle[0:train_size],
                     golden_shuffle[0:train_size])
-            self.validate = dataset(input_shuffle[train_size:test_offset],
+            self.validate = Dataset(input_shuffle[train_size:test_offset],
                     golden_shuffle[train_size:test_offset])
-            self.test = dataset(input_shuffle[test_offset:-1],
+            self.test = Dataset(input_shuffle[test_offset:-1],
                     golden_shuffle[test_offset:-1])
         else:
             ### training data ###
@@ -101,12 +134,14 @@ class datasets:
             num_train_in = int(train_inFile.readline())
             train_in_data = [ [type_in(i) for i in inputs.split(', ') ]
                     for inputs in train_inFile.readlines() ]
+            self.num_in_neuron = len(train_in_data[0])
             assert(num_train_in == len(train_in_data))
             # import golden file
             train_goldFile = open(data_dir + 'train_golden.txt')
             num_train_gold = int(train_goldFile.readline())
             train_gold_data = [ [type_gold(i) for i in goldens.split(', ')]
                     for goldens in train_goldFile.readlines() ]
+            self.num_out_neuron = len(train_gold_data[0])
             assert(num_train_gold == len(train_gold_data))
             # shuffle
             assert(num_train_in == num_train_gold)
@@ -115,7 +150,7 @@ class datasets:
             train_in_shuffle = [ train_in_data[i] for i in indices_shuffle ]
             train_gold_shuffle = [ train_gold_data[i] for i in indices_shuffle ]
             # initialize training data
-            self.train = dataset(train_in_shuffle, train_gold_shuffle)
+            self.train = Dataset(train_in_shuffle, train_gold_shuffle)
 
             ### validation data ###
             # import input file
@@ -123,16 +158,18 @@ class datasets:
             num_validate_in = int(validate_inFile.readline())
             validate_in_data = [ [type_in(i) for i in inputs.split(', ') ]
                     for inputs in validate_inFile.readlines() ]
+            assert(self.num_in_neuron == len(validate_in_data[0]))
             assert(num_validate_in == len(validate_in_data))
             # import golden file
             validate_goldFile = open(data_dir + 'validate_golden.txt')
             num_validate_gold = int(validate_goldFile.readline())
             validate_gold_data = [ [type_gold(i) for i in goldens.split(', ')]
                     for goldens in validate_goldFile.readlines() ]
+            assert(self.num_out_neuron == len(validate_gold_data[0]))
             assert(num_validate_gold == len(validate_gold_data))
             # initialize validation data
             assert(num_validate_in == num_validate_gold)
-            self.validate = dataset(validate_in_data, validate_gold_data)
+            self.validate = Dataset(validate_in_data, validate_gold_data)
 
             ### testing data ###
             # import input file
@@ -140,14 +177,16 @@ class datasets:
             num_test_in = int(test_inFile.readline())
             test_in_data = [ [type_in(i) for i in inputs.split(', ') ]
                     for inputs in test_inFile.readlines() ]
+            assert(self.num_in_neuron == len(test_in_data[0]))
             assert(num_test_in == len(test_in_data))
             # import golden file
             test_goldFile = open(data_dir + 'test_golden.txt')
             num_test_gold = int(test_goldFile.readline())
             test_gold_data = [ [type_gold(i) for i in goldens.split(', ')]
                     for goldens in test_goldFile.readlines() ]
+            assert(self.num_out_neuron == len(test_gold_data[0]))
             assert(num_test_gold == len(test_gold_data))
             # initialize testing data
             assert(num_test_in == num_test_gold)
-            self.test = dataset(test_in_data, test_gold_data)
+            self.test = Dataset(test_in_data, test_gold_data)
 

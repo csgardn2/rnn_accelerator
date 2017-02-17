@@ -11,32 +11,61 @@ import util
 import dataset
 import hotspot.hotspot as bm # TODO
 
-FLAGS = None
+flags = tf.app.flags
+FLAGS = flags.FLAGS
+flags.DEFINE_float('learning_rate', 0.01, 'learning rate')
+flags.DEFINE_integer('batch_size', 100, 'batch size')
+flags.DEFINE_integer('hidden1',
+        32, 'number of neurons in hidden layer 1')
+flags.DEFINE_integer('hidden2',
+        0, 'number of layers in hidden layer 2')
+flags.DEFINE_string('data_dir',
+        '/home/cosine/research/rnn_accelerator/dnn/hotspot/data/', 'data directory')
+flags.DEFINE_string('input_data_type',
+        'float', 'input data type: float or int')
+flags.DEFINE_string('output_data_type',
+        'float', 'output data type: float or int')
+flags.DEFINE_bool('separate_file',
+        False, 'indicates whether training, validation, testing data are in separate files')
+flags.DEFINE_string('log_dir',
+        '/home/cosine/research/rnn_accelerator/dnn/hotspot/log', 'directory to put the log data')
 
 def run_training():
     '''train the Neural Network'''
+    # sanity check
+    assert(FLAGS.input_data_type == 'float'
+            or FLAGS.input_data_type == 'int')
+    assert(FLAGS.output_data_type == 'float'
+            or FLAGS.output_data_type == 'int')
     # import the dataset
-    data_sets = dataset.datasets(FLAGS.data_dir, FLAGS.separate_file,
+    data_sets = dataset.Datasets(FLAGS.data_dir, FLAGS.separate_file,
             FLAGS.input_data_type, FLAGS.output_data_type)
 
     with tf.Graph().as_default():
-        # placeholder TODO
+        # placeholder
         input_pl, golden_pl = util.generate_placeholder(
-                len(data_sets.train.input_data),
+                data_sets.num_in_neuron,
+                data_sets.num_out_neuron,
                 FLAGS.batch_size,
-                type_in, type_gold
+                FLAGS.input_data_type,
+                FLAGS.output_data_type
                 )
         # build graph
         if FLAGS.hidden1 == 0:
             assert(FLAGS.hidden2 == 0)
-            outputs = util.layer('output layer', input_pl, num_gold, None)
+            outputs = util.layer('output_layer', input_pl,
+                    data_sets.num_in_neuron, data_sets.num_out_neuron, None)
         else:
-            hidden1 = util.layer('hidden1', input_pl, FLAGS.hidden1, tf.nn.relu)
+            hidden1 = util.layer('hidden1', input_pl,
+                    data_sets.num_in_neuron, FLAGS.hidden1, tf.nn.relu)
             if FLAGS.hidden2 == 0:
-                outputs = util.layer('output layer', hidden1, num_gold, None)
+                outputs = util.layer('output_layer', hidden1,
+                        FLAGS.hidden1, data_sets.num_out_neuron, None)
             else:
-                hidden2 = util.layer('hidden2', hidden1, FLAGS.hidden2, tf.nn.relu)
-                outputs = util.layer('output layer', hidden2, num_gold, None)
+                hidden2 = util.layer('hidden2', hidden1,
+                        FLAGS.hidden1, FLAGS.hidden2, tf.nn.relu)
+                outputs = util.layer('output_layer', hidden2,
+                        FLAGS.hidden2, data_sets.num_out_neuron, None)
 
         # loss
         loss = bm.loss(outputs, golden_pl)
@@ -48,7 +77,7 @@ def run_training():
         error = bm.error(outputs, golden_pl)
 
         # summary - not necessary
-        summary = tf.summary.merge_all()
+        summary = tf.merge_all_summaries()
 
         # init
         init = tf.initialize_all_variables()
@@ -57,13 +86,13 @@ def run_training():
         sess = tf.Session()
 
         # summary writer - not necessary
-        summary_writer = tf.summary.FileWriter(FLAGS.log_dir, sess.graph)
+        summary_writer = tf.train.SummaryWriter(FLAGS.log_dir, sess.graph)
 
         # everything built, run init
         sess.run(init)
 
         # start training
-        _, max_steps = data_sets.train.max_steps(batch_size)
+        _, max_steps = data_sets.train.max_steps(FLAGS.batch_size)
         for step in xrange(max_steps):
             feed_dict = util.fill_feed_dict(data_sets.train,
                     input_pl, golden_pl,
@@ -74,16 +103,18 @@ def run_training():
             # write the summary
             # evaluate the model
             if not step % 100:
-                print('step %d: loss = %.2f' % (step, loss))
+                print('step %d: loss = %.2f' % (step,
+                    sess.run(loss, feed_dict=feed_dict) ))
 
                 summary_str = sess.run(summary, feed_dict=feed_dict)
                 summary_writer.add_summary(summary_str, step)
                 summary_writer.flush()
-
+                '''
                 print('training data evaluation')
                 util.do_eval(sess, error,
                         input_pl, golden_pl,
                         FLAGS.batch_size, data_sets.train)
+                '''
                 print('validation data evaluation')
                 util.do_eval(sess, error,
                         input_pl, golden_pl,
@@ -99,6 +130,7 @@ def main(_):
     run_training()
 
 if __name__ == '__main__':
+    '''
     parser = argparse.ArgumentParser()
     parser.add_argument(
             '--learning_rate',
@@ -106,16 +138,14 @@ if __name__ == '__main__':
             default=0.01,
             help='learning rate'
     )
-    '''
     parser.add_argument(
             '--max_steps',
             type=int,
             default=2000,
             help='max training step'
     )
-    '''
     parser.add_argument(
-            'batch_size',
+            '--batch_size',
             type=int,
             default=100,
             help='batch size'
@@ -135,19 +165,19 @@ if __name__ == '__main__':
     parser.add_argument(
             '--data_dir',
             type=str,
-            default='/home/cosine/research/rnn_accelerator/heat_maps/simulation_output_temperatures/256x256_random_iterations0000to0031/',
+            default='/home/cosine/research/rnn_accelerator/dnn/hotspot/data/',
             help='directory of data'
     )
     parser.add_argument(
             '--input_data_type',
             type=str,
-            default='float'
+            default='float',
             help='type of input data, choose from "int", "float", "double"'
     )
     parser.add_argument(
             '--output_data_type',
             type=str,
-            default='float'
+            default='float',
             help='type of output data, choose from "int", "float", "double"'
     )
     parser.add_argument(
@@ -158,10 +188,9 @@ if __name__ == '__main__':
     )
     parser.add_argument(
             '--log_dir',
-            typr=str,
-            default='/home/cosine/research/rnn_accelerator/dnn/hotspot/log'
+            type=str,
+            default='/home/cosine/research/rnn_accelerator/dnn/hotspot/log',
             help='Directory to put the log data'
     )
-
-    FLAGS, unparsed = parser.parse_known_args()
-    tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
+    '''
+    tf.app.run()

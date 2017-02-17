@@ -40,7 +40,7 @@ def training(loss, learning_rate):
     # TODO: optimizer can be modified
     optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     # op
-    train_op = optimizer.tf.minimize(loss)
+    train_op = optimizer.minimize(loss)
     return train_op
 
 def error(outputs, goldens):

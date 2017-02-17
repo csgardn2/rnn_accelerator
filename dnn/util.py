@@ -6,39 +6,34 @@ feed-forward neural network
 '''
 import tensorflow as tf
 
-def generate_placeholder(num_data, batch_size, type_in, type_gold):
+def generate_placeholder(num_in, num_out, batch_size, type_in, type_out):
     '''generate placeholder for inputs and golden output
 
     Args:
-        num_in: number of data
+        num_in: number of input neurons
+        num_out: number of output neurons
         batch_size: batch size
         type_in: type of inputs, e.g. float
-        type_gold: type of outputs
+        type_out: type of outputs
 
     Returns:
         input_pl: input placeholder
         golden_pl: output placeholder
     '''
     # type
-    assert(type_in == "int" or type_in == "float" or type_in == "double")
-    assert(type_gold == "int" or type_gold == "float" or type_gold == "double")
+    assert(type_in == "int" or type_in == "float")
+    assert(type_out == "int" or type_out == "float")
+    type_in_tf = tf.float32
     if type_in == "int":
         type_in_tf = tf.int32
-    elif type_in == "float":
-        type_in_tf = tf.float32
-    else:
-        type_in_tf = tf.float64
-    if type_gold == "int":
-        type_gold_tf = tf.int32
-    elif:
-        type_gold_tf = tf.float32
-    else:
-        type_gold_tf = tf.float64
+    type_out_tf = tf.float32
+    if type_out == "int":
+        type_out_tf = tf.int32
     # placeholder
     input_pl = tf.placeholder(type_in_tf,
             shape=(batch_size, num_in))
-    golden_pl = tf.placeholder(type_out,
-            shape=(batch_size, num_gold))
+    golden_pl = tf.placeholder(type_out_tf,
+            shape=(batch_size, num_out))
     return input_pl, golden_pl
 
 def fill_feed_dict(data_set, input_pl, golden_pl, batch_size):
@@ -58,14 +53,18 @@ def fill_feed_dict(data_set, input_pl, golden_pl, batch_size):
         input_pl: input_feed,
         golden_pl: golden_feed
     }
+    # debug
+    #print input_pl.get_shape()
+    #print len(input_feed)
     return feed_dict
 
-def layer(name, input_units, num_out, activation_function):
+def layer(name, input_units, num_in, num_out, activation_function):
     '''calculation within a layer
 
     Args:
         name: the name of this layer
-        input_units: input placeholder (type: list)
+        input_units: input placeholder (type: Tensor)
+        num_in: number of input neurons(neurons in the previous layer)
         num_out: number of output neurons(neurons within this layer)
         activation_function: the activation_function applied on outputs,
         None if nothing needs to be done
@@ -74,14 +73,13 @@ def layer(name, input_units, num_out, activation_function):
         output_units: output neurons(neurons within this layer)
     '''
     with tf.name_scope(name):
-        num_in = len(input_units)
         # TODO: weights and biases initialization can be changed
         weights = tf.Variable(tf.zeros([num_in, num_out]),
                 name='weights')
         biases = tf.Variable(tf.zeros([num_out]),
                 name='biases')
         output_units = tf.matmul(input_units, weights) + biases
-        if activation_function != 'None':
+        if activation_function:
             output_units = activation_function(output_units)
     return output_units
 
@@ -99,14 +97,17 @@ def do_eval(sess, error,
         data_set: the data to be evaluated
     '''
     error_sum = 0
+    data_set.reset_touched()
     # steps_per_epoch is floor(data_size/batch_size)
     # num_examples is steps_per_epoch * batch_size
     num_examples, steps_per_epoch = data_set.max_steps(batch_size)
     for x in xrange(steps_per_epoch):
+        #debug
+        #print "iteration: %d" %x
         feed_dict = fill_feed_dict(data_set,
                 input_pl, golden_pl,
                 batch_size)
         error_sum = error_sum + sess.run(error, feed_dict=feed_dict)
     accuracy = 100 - 100 * float(error_sum) / float(num_examples)
-    print('Number of examples: %d, Accuracy: %.3f',
+    print('Number of examples: %d, Accuracy: %.3f'
             % (num_examples, accuracy))
