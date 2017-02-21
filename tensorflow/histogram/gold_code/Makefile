@@ -1,5 +1,5 @@
 COMPILER=g++
-EXENAME=trainig_data_generator
+EXENAME=training_data_generator
 COMPILEFLAGS=-g -Wall -Wextra -ansi -Wfatal-errors -std=c++11
 LINKFLAGS=-g -Wall -Wextra -ansi -Wfatal-errors
 LIBS=

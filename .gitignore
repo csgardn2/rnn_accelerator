@@ -8,8 +8,17 @@ heat_maps/simulation_output_temperatures/256x256_full_random_iterations00000to65
 heat_maps/simulation_output_temperatures/256x256_full_random_iterations00000to65535/256x256_full_random_iterations49152to57343.tar.lz
 heat_maps/simulation_output_temperatures/256x256_full_random_iterations00000to65535/256x256_full_random_iterations57344to65535.tar.lz
 
-# Compiler outputs
+# Executable/Binary Compiler Outputs
 heat_visualizer/*.o
 heat_visualizer/heat_visualizer
 power_map_generator/*.o
 power_map_generator/power_map_generator
+tensorflow/gradient/gold_code/*.o
+tensorflow/gradient/gold_code/gradient
+tensorflow/histogram/gold_code/*.o
+tensorflow/histogram/gold_code/training_data_generator
+tensorflow/hotspot/gold_code/*.o
+tensorflow/hotspot/gold_code/hotspot
+tensorflow/rnn_basic/gold_code/*.o
+tensorflow/rnn_basic/gold_code/training_data_generator
+
