@@ -4,6 +4,8 @@
 #include <time.h>
 #include <assert.h>
 
+#include "generate_power_map.h"
+
 #ifdef RD_WG_SIZE_0_0                                                            
     #define BLOCK_SIZE RD_WG_SIZE_0_0                                        
 #elif defined(RD_WG_SIZE_0)                                                      
@@ -53,8 +55,7 @@ void run(int argc, char** argv);
 #define pin_stats_pause(cycles)   stopCycle(cycles)
 #define pin_stats_dump(cycles)    printf("timer: %Lu\n", cycles)
 
-void 
-fatal(const char *s)
+void fatal(const char *s)
 {
     fprintf(stderr, "error: %s\n", s);
 }
@@ -288,9 +289,21 @@ int compute_tran_temp
     int src = 1;
     int dst = 0;
     
-    // Added this code to generate dump.  Remove if you don't need it.
-    unsigned linear_size = col * row;
-    float* dump_src = new float[linear_size];
+    // Added this to generate randomly changing power maps.  Since we want each
+    // power map to be very similar to that of the previous iteration, we need
+    // to keep track of some state information from the previous state.
+    power_map_state_t power_map_state
+    (
+        col,                // Width
+        row,                // Height
+        1024,               // Max hotspots
+        10.0f,              // Min peak amplitude
+        50.0f,              // Max peak amplitude
+        5.0f,               // Min stdev
+        15.0f,              // Max stddev
+        5.0f,               // Min aging rate
+        20.0f               // Max aging rate
+    );
     
     std::string source_filename;
     std::string destination_filename;
@@ -299,12 +312,19 @@ int compute_tran_temp
     char height_str[64];
     snprintf(width_str, 64, "%u", col);
     snprintf(height_str, 64, "%u", row);
+    
+    unsigned linear_size = col * row;
+    float* host_src = new float[linear_size];
+    float* host_power = new float[row * col];
     for (int t = 0; t < total_iterations; t += num_iterations)
     {
         
         int temp = src;
         src = dst;
         dst = temp;
+        
+        generate_power_map(&power_map_state, host_power);
+        cudaMemcpy(MatrixPower, host_power, linear_size * sizeof(float), cudaMemcpyHostToDevice);
         
         calculate_temp
             <<<dimGrid, dimBlock>>>
@@ -326,7 +346,7 @@ int compute_tran_temp
             );
         
         // Added this code to generate dump.  Remove if you don't need it.
-        cudaMemcpy(dump_src, MatrixTemp[src], linear_size * sizeof(float), cudaMemcpyDeviceToHost);
+        cudaMemcpy(host_src, MatrixTemp[src], linear_size * sizeof(float), cudaMemcpyDeviceToHost);
         snprintf(iteration_str, 64, "%05u", t);
         source_filename = "./simulation_output_temperatures/256x256_full_random_iterations00000to65535/source_";
         source_filename += width_str;
@@ -335,12 +355,13 @@ int compute_tran_temp
         source_filename += "_full_random_iteration";
         source_filename += iteration_str;
         source_filename += ".csv";
-        dump_full_csv_training_data(dump_src, col, row, source_filename);
+        // dump_full_csv_training_data(host_src, col, row, source_filename);
         
     }
     
     // Added this code to generate dump.  Remove if you don't need it.
-    delete[] dump_src;
+    delete[] host_src;
+    delete[] host_power;
     
     return dst;
     
@@ -348,6 +369,9 @@ int compute_tran_temp
 
 void usage(int argc, char **argv)
 {
+    if (argc < 1)
+        return;
+    
     fprintf(stderr, "Usage: %s <grid_rows/grid_cols> <pyramid_height> <sim_time> <temp_file> <power_file> <output_file>\n", argv[0]);
     fprintf(stderr, "\t<grid_rows/grid_cols>  - number of rows/cols in the grid (positive integer)\n");
     fprintf(stderr, "\t<pyramid_height> - pyramid height (positive integer)\n");

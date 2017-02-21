@@ -1,25 +1,54 @@
-include make.config
+COMPILER=nvcc
+EXENAME=hotspot
+COMPILEFLAGS=--compiler-options=-Wall,-Wextra,-Wfatal-errors -arch=sm_30 -ccbin=g++ -std=c++11
+LINKFLAGS=--compiler-options=-Wall,-Wextra,-Wfatal-errors -arch=sm_30 -ccbin=g++
+LIBS=
+ARGS=256 1 256 ../../../heat_maps/power_and_initial_temperatures/random_temp_256.txt ../../../heat_maps/power_and_initial_temperatures/random_power_256.txt output.txt
 
-CC := $(CUDA_DIR)/bin/nvcc
+all: $(EXENAME)
 
-INCLUDE := $(CUDA_DIR)/include
+# add additional .o files on the line below (after main.o)
+$(EXENAME): \
+    dump_3x3_csv_training_data.o \
+    dump_full_csv_training_data.o \
+    dump_py_training_data.o \
+    generate_power_map.o \
+    hotspot.o \
+    main.o \
+    power_map_state.o
+	$(COMPILER) $(LINKFLAGS) -o $(EXENAME) $^ $(LIBS)
+	@echo "*** COMPILE_SUCCESSFUL ***"
 
-SRC = hotspot.cu dump_full_csv_training_data.cpp
+#########################
 
-EXE = hotspot
+# add more .cpp -> .o compile commands here
 
-release: $(SRC)
-	$(CC) $(KERNEL_DIM) $(SRC) -arch=sm_30 -o $(EXE) -I$(INCLUDE) -L$(CUDA_LIB_DIR) 
+dump_3x3_csv_training_data.o: dump_3x3_csv_training_data.cpp
+	$(COMPILER) $(COMPILEFLAGS) -c -o $@ $<
 
-enum: $(SRC)
-	$(CC) $(KERNEL_DIM) -arch=sm_30 -deviceemu $(SRC) -o $(EXE) -I$(INCLUDE) -L$(CUDA_LIB_DIR) 
+dump_full_csv_training_data.o: dump_full_csv_training_data.cpp
+	$(COMPILER) $(COMPILEFLAGS) -c -o $@ $<
 
-debug: $(SRC)
-	$(CC) $(KERNEL_DIM) -g -arch=sm_30 $(SRC) -o $(EXE) -I$(INCLUDE) -L$(CUDA_LIB_DIR) 
+dump_py_training_data.o: dump_py_training_data.cpp
+	$(COMPILER) $(COMPILEFLAGS) -c -o $@ $<
 
-debugenum: $(SRC)
-	$(CC) $(KERNEL_DIM) -g -arch=sm_30 -deviceemu $(SRC) -o $(EXE) -I$(INCLUDE) -L$(CUDA_LIB_DIR) 
+generate_power_map.o: generate_power_map.cpp
+	$(COMPILER) $(COMPILEFLAGS) -c -o $@ $<
 
-clean: $(SRC)
-	rm -f $(EXE) $(EXE).linkinfo result.txt
+hotspot.o: hotspot.cpp
+	$(COMPILER) $(COMPILEFLAGS) -c -o $@ $<
+
+main.o: hotspot.cu
+	$(COMPILER) $(COMPILEFLAGS) -c -o $@ $<
+
+power_map_state.o: power_map_state.cpp
+	$(COMPILER) $(COMPILEFLAGS) -c -o $@ $<
+
+#########################
+
+clean:
+	@rm -fv *.o $(EXENAME)
+
+run: $(EXENAME)
+	./$(EXENAME) $(ARGS)
 

@@ -1,0 +1,1 @@
+../../../power_map_generator/hotspot.cpp
