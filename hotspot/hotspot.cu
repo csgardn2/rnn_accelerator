@@ -38,14 +38,12 @@ const float chip_width = 0.016;
 /* Ambient temperature, assuming no package at all  */
 // float amb_temp = 80.0;
 
-unsigned dump_csv_training_data
+unsigned dump_full_csv_training_data
 (
-    const float* source_temperature_matrix,
-    const float* destination_temperature_matrix,
+    const float* temperature_matrix,
     unsigned width,
     unsigned height,
-    const std::string& source_filename,
-    const std::string& destination_filename
+    const std::string& filename
 );
 
 void run(int argc, char** argv);
@@ -238,7 +236,7 @@ __global__ void calculate_temp
         if (i == iteration - 1)
             break;
         
-        if (computed)     //Assign the computation range
+        if (computed)     // Assign the computation range
             temp_on_cuda[ty][tx] = temp_t[ty][tx];
             
         __syncthreads();
@@ -293,13 +291,14 @@ int compute_tran_temp
     // Added this code to generate dump.  Remove if you don't need it.
     unsigned linear_size = col * row;
     float* dump_src = new float[linear_size];
-    float* dump_dst = new float[linear_size];
-    unsigned dump_ix = 0;
-    unsigned num_dumps = total_iterations;
     
     std::string source_filename;
     std::string destination_filename;
-    char numeral[64];
+    char iteration_str[64];
+    char width_str[64];
+    char height_str[64];
+    snprintf(width_str, 64, "%u", col);
+    snprintf(height_str, 64, "%u", row);
     for (int t = 0; t < total_iterations; t += num_iterations)
     {
         
@@ -327,30 +326,21 @@ int compute_tran_temp
             );
         
         // Added this code to generate dump.  Remove if you don't need it.
-        if (dump_ix < num_dumps)
-        {
-            
-            cudaMemcpy(dump_src, MatrixTemp[src], linear_size * sizeof(float), cudaMemcpyDeviceToHost);
-            cudaMemcpy(dump_dst, MatrixTemp[dst], linear_size * sizeof(float), cudaMemcpyDeviceToHost);
-            
-            snprintf(numeral, 64, "%u", dump_ix);
-            source_filename = "cpu_source_iteration_";
-            source_filename += numeral;
-            source_filename += ".csv";
-            destination_filename = "cpu_destination_iteration_";
-            destination_filename += numeral;
-            destination_filename += ".csv";
-//            dump_csv_training_data(dump_src, dump_dst, col, row, source_filename, destination_filename);
-            
-            dump_ix++;
-            
-        }
+        cudaMemcpy(dump_src, MatrixTemp[src], linear_size * sizeof(float), cudaMemcpyDeviceToHost);
+        snprintf(iteration_str, 64, "%05u", t);
+        source_filename = "./simulation_output_temperatures/256x256_full_random_iterations00000to65535/source_";
+        source_filename += width_str;
+        source_filename += 'x';
+        source_filename += height_str;
+        source_filename += "_full_random_iteration";
+        source_filename += iteration_str;
+        source_filename += ".txt";
+        dump_full_csv_training_data(dump_src, col, row, source_filename);
         
     }
     
     // Added this code to generate dump.  Remove if you don't need it.
     delete[] dump_src;
-    delete[] dump_dst;
     
     return dst;
     
