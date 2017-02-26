@@ -21,6 +21,7 @@ tensorflow/hotspot/gold_code/*.o
 tensorflow/hotspot/gold_code/hotspot
 tensorflow/rnn_basic/gold_code/*.o
 tensorflow/rnn_basic/gold_code/training_data_generator
+tensorflow/mnist/neural_code/*.o
 
 # Other junk
 tensorflow/hotspot/gold_code/output.txt

@@ -49,6 +49,9 @@ int main(int argc, char** argv)
     unsigned flat_size = args.width * args.height;
     float* power_map = new float[flat_size];
     
+    Conor, you left off here.  Add command line options for the gaussian parameters
+    and outputting txt/png files.
+    
 //    unsigned char* color_out = encoder.get_grey();
     std::string filename;
     for (unsigned iy = 0, bound = args.time_steps; iy < bound; iy++)
