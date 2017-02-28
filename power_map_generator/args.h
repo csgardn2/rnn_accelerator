@@ -52,7 +52,8 @@ enum class parsing_status_t : unsigned char
     TIME_STEPS_INVALID,
     
     BASE_FILENAME_NOT_PASSED,
-    BASE_FILENAME_INVALID,
+    BASE_PNG_FILENAME_INVALID,
+    BASE_TXT_FILENAME_INVALID,
     
     MAX_HOTSPOTS_INVALID,
     
@@ -92,7 +93,8 @@ class args_t
           : width_status(arg_status_t::NOT_FOUND),
             height_status(arg_status_t::NOT_FOUND),
             time_steps_status(arg_status_t::NOT_FOUND),
-            base_filename_status(arg_status_t::NOT_FOUND),
+            base_png_filename_status(arg_status_t::NOT_FOUND),
+            base_txt_filename_status(arg_status_t::NOT_FOUND),
             max_hotspots_status(arg_status_t::NOT_FOUND),
             min_peak_amplitude_status(arg_status_t::NOT_FOUND),
             max_peak_amplitude_status(arg_status_t::NOT_FOUND),
@@ -145,7 +147,7 @@ class args_t
         /// The number of columns in the output power map.
         unsigned width;
         
-        /// See \ref width and arg_status_t
+        /// See \ref width
         arg_status_t width_status;
         
         /// \brief Required.\n
@@ -153,7 +155,7 @@ class args_t
         /// The number of rows in the output power map.
         unsigned height;
         
-        /// See \ref height and arg_status_t
+        /// See \ref height
         arg_status_t height_status;
         
         /// \brief Required.\n
@@ -161,21 +163,36 @@ class args_t
         /// The number output power maps (files) to generate.
         unsigned time_steps;
         
-        /// See \ref time_steps and arg_status_t
+        /// See \ref time_steps
         arg_status_t time_steps_status;
         
-        /// \brief Required.\n
-        /// Usage: --base-filename -o [string]\n
+        /// \brief At least one of this and/or \ref args_t::base_txt_filename
+        /// "base_txt_filename" are required.\n
+        /// Usage: --base-png-filename -p [string]\n
         /// The base part of a filename which will be used to save power
-        /// maps.
+        /// maps as PNG files.
+        /// Example:
+        /// The user passes '--base-filename lard' and '--time-steps 4' on the
+        /// command line.  The output files will be named 'lard_0.png',
+        /// 'lard_1.png', 'lard_2.png', and 'lard_3.png'.
+        std::string base_png_filename;
+        
+        /// See \ref base_png_filename
+        arg_status_t base_png_filename_status;
+        
+        /// \brief At least one of this and/or \ref args_t::base_png_filename
+        /// "base_png_filename" are required.\n
+        /// Usage: --base-txt-filename -x [string]\n
+        /// The base part of a filename which will be used to save power
+        /// maps as row-major TXT files.
         /// Example:
         /// The user passes '--base-filename lard' and '--time-steps 4' on the
         /// command line.  The output files will be named 'lard_0.txt',
         /// 'lard_1.txt', 'lard_2.txt', and 'lard_3.txt'.
-        std::string base_filename;
+        std::string base_txt_filename;
         
-        /// See \ref base_filename and arg_status_t
-        arg_status_t base_filename_status;
+        /// See \ref base_txt_filename
+        arg_status_t base_txt_filename_status;
         
         /// \brief Optional\n
         /// Usage: --max-hotspots -h [integer >= 0]\n
@@ -183,7 +200,7 @@ class args_t
         /// power_map_state_t::max_hotspots
         unsigned max_hotspots;
         
-        /// See \ref power_map_state_t::max_hotspots and arg_status_t
+        /// See \ref power_map_state_t::max_hotspots
         arg_status_t max_hotspots_status;
         
         /// \brief If the associated argument is not passed on the command line,
@@ -200,7 +217,7 @@ class args_t
         /// power_map_state_t::min_peak_amplitude
         float min_peak_amplitude;
         
-        /// See \ref power_map_state_t::min_peak_amplitude and arg_status_t
+        /// See \ref power_map_state_t::min_peak_amplitude
         arg_status_t min_peak_amplitude_status;
         
         /// \brief If the associated argument is not passed on the command line,
@@ -217,7 +234,7 @@ class args_t
         /// power_map_state_t::max_peak_amplitude
         float max_peak_amplitude;
         
-        /// See \ref power_map_state_t::max_peak_amplitude and arg_status_t
+        /// See \ref power_map_state_t::max_peak_amplitude
         arg_status_t max_peak_amplitude_status;
         
         /// \brief If the associated argument is not passed on the command line,
@@ -233,7 +250,7 @@ class args_t
         /// and \ref power_map_state_t::min_stddev
         float min_stddev;
         
-        /// See \ref power_map_state_t::min_stddev and arg_status_t
+        /// See \ref power_map_state_t::min_stddev
         arg_status_t min_stddev_status;
         
         /// \brief If the associated argument is not passed on the command line,
@@ -249,7 +266,7 @@ class args_t
         /// and \ref power_map_state_t::max_stddev
         float max_stddev;
         
-        /// See \ref power_map_state_t::max_stddev and arg_status_t
+        /// See \ref power_map_state_t::max_stddev
         arg_status_t max_stddev_status;
         
         /// \brief If the associated argument is not passed on the command line,
@@ -265,7 +282,7 @@ class args_t
         /// value" and \ref power_map_state_t::min_aging_rate
         float min_aging_rate;
         
-        /// See \ref power_map_state_t::min_aging_rate and arg_status_t
+        /// See \ref power_map_state_t::min_aging_rate
         arg_status_t min_aging_rate_status;
         
         /// \brief If the associated argument is not passed on the command line,
@@ -282,7 +299,7 @@ class args_t
         /// power_map_state_t::max_aging_rate
         float max_aging_rate;
         
-        /// See \ref power_map_state_t::max_aging_rate and arg_status_t
+        /// See \ref power_map_state_t::max_aging_rate
         arg_status_t max_aging_rate_status;
         
         /// \brief If the associated argument is not passed on the command line,
@@ -317,7 +334,7 @@ class args_t
             std::experimental::string_view short_parameter
             
         );
-
+        
         /// \brief Helper function for \ref args_t::parse "parse".  Searches
         /// for an argument and does a bunch of validation checks on the
         /// argument before returning it.

@@ -30,8 +30,9 @@ const char* args_t::enum_to_string(parsing_status_t parsing_status)
         "Requied command line parameter --time-steps / -t was not passed.",
         "Command line parameter --time-steps / -t was followed by an invalid number.",
         
-        "Required command line parameter --base-filename / -o was not passed.",
-        "Command line parameter --base-filename / -o must be followed by a string.",
+        "You must specify at least one of --base-png-filename -p and/or --base-txt-filename / -x.",
+        "Command line parameter --base-png-filename / -p must be followed by a string.",
+        "Command line parameter --base-txt-filename / -x must be followed by a string.",
         
         "Command line parameter --max-hotspots / -h was followed by an invalid number.",
         
@@ -66,11 +67,13 @@ const char* args_t::enum_to_string(parsing_status_t parsing_status)
 parsing_status_t args_t::parse(unsigned argc, char const* const* argv, bool* consumed)
 {
     
-    // Mark all previous argument data as uninitialized
+    // Mark all previous argument data as uninitialized incase a parsing
+    // failure causes an early return.
     this->width_status = arg_status_t::NOT_FOUND;
     this->height_status = arg_status_t::NOT_FOUND;
     this->time_steps_status = arg_status_t::NOT_FOUND;
-    this->base_filename_status = arg_status_t::NOT_FOUND;
+    this->base_png_filename_status = arg_status_t::NOT_FOUND;
+    this->base_txt_filename_status = arg_status_t::NOT_FOUND;
     this->max_hotspots_status = arg_status_t::NOT_FOUND;
     this->min_peak_amplitude_status = arg_status_t::NOT_FOUND;
     this->max_peak_amplitude_status = arg_status_t::NOT_FOUND;
@@ -122,24 +125,59 @@ parsing_status_t args_t::parse(unsigned argc, char const* const* argv, bool* con
             break;
     }
     
-    // --base-filename -o
-    unsigned match = search_argv(argc, argv, "--base-filename", "-o");
+    // --base-png-filename -p
+    unsigned match = search_argv(argc, argv, "--base-png-filename", "-p");
     if (match == UINT_MAX)
     {
-        this->base_filename_status = arg_status_t::NOT_FOUND;
-        return parsing_status_t::BASE_FILENAME_NOT_PASSED;
+        
+        this->base_png_filename_status = arg_status_t::NOT_FOUND;
+        
+    } else {
+        
+        if (enable_consumption_tracking)
+            consumed[match] = true;
+        
+        if (match + 1 >= argc)
+        {
+            this->base_png_filename_status = arg_status_t::INVALID;
+            return parsing_status_t::BASE_PNG_FILENAME_INVALID;
+        }
+        if (enable_consumption_tracking)
+            consumed[match + 1] = true;
+        this->base_png_filename = argv[match + 1];
+        this->base_png_filename_status = arg_status_t::FOUND;
+        
     }
-    if (enable_consumption_tracking)
-        consumed[match] = true;
-    if (match + 1 >= argc)
+    
+    // --base-txt-filename -x
+    match = search_argv(argc, argv, "--base-txt-filename", "-x");
+    if (match == UINT_MAX)
     {
-        this->base_filename_status = arg_status_t::INVALID;
-        return parsing_status_t::BASE_FILENAME_INVALID;
+        
+        this->base_txt_filename_status = arg_status_t::NOT_FOUND;
+        
+    } else {
+        
+        if (enable_consumption_tracking)
+            consumed[match] = true;
+        
+        if (match + 1 >= argc)
+        {
+            this->base_txt_filename_status = arg_status_t::INVALID;
+            return parsing_status_t::BASE_TXT_FILENAME_INVALID;
+        }
+        if (enable_consumption_tracking)
+            consumed[match + 1] = true;
+        this->base_txt_filename = argv[match + 1];
+        this->base_txt_filename_status = arg_status_t::FOUND;
+        
     }
-    if (enable_consumption_tracking)
-        consumed[match + 1] = true;
-    this->base_filename = argv[match + 1];
-    this->base_filename_status = arg_status_t::FOUND;
+    
+    if (
+        this->base_png_filename_status != arg_status_t::FOUND
+     && this->base_txt_filename_status != arg_status_t::FOUND
+    )
+        return parsing_status_t::BASE_FILENAME_NOT_PASSED;
     
     // --max-hotspots -m
     switch (args_t::parse_unsigned_argument(

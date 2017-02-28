@@ -3,7 +3,7 @@ EXENAME=power_map_generator
 COMPILEFLAGS=-Wall -Wextra -ansi -Wfatal-errors -std=c++1z
 LINKFLAGS=-Wall -Wextra -ansi -Wfatal-errors
 LIBS=-lpng
-ARGS=--width 256 --height 256 --time-steps 256 --base-filename power
+ARGS=--width 256 --height 256 --time-steps 256 --base-png-filename power --base-txt-filename power
 
 all: documentation $(EXENAME)
 

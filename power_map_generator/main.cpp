@@ -43,7 +43,8 @@ int main(int argc, char** argv)
         << "width = " << args.width << '\n'
         << "height = " << args.height << '\n'
         << "time_steps = " << args.time_steps << '\n'
-        << "base_filename = \"" << args.base_filename << "\"\n"
+        << "base_png_filename = \"" << args.base_png_filename << "\"\n"
+        << "base_txt_filename = \"" << args.base_txt_filename << "\"\n"
         << "max_hotspots = " << args.max_hotspots << '\n'
         << "min_peak_amplitude = " << args.min_peak_amplitude << '\n'
         << "max_peak_amplitude = " << args.max_peak_amplitude << '\n'
