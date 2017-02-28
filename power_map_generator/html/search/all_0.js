@@ -5,7 +5,6 @@ var searchData=
   ['aging_5frate',['aging_rate',['../classhotspot__t.html#aa0c615aec9ea26d10b8d25e40abfb3af',1,'hotspot_t']]],
   ['amplitude',['amplitude',['../classhotspot__t.html#aa508408741bd3bfffda76a5c4e2a2e62',1,'hotspot_t']]],
   ['arg_5ferror_5fcode_5ft',['arg_error_code_t',['../args_8h.html#a619a9e7c50949dfe2f22bac20d6904d9',1,'args.h']]],
-  ['arg_5ferror_5ft',['arg_error_t',['../classarg__error__t.html',1,'arg_error_t'],['../classarg__error__t.html#a1b2739c2bfa4af6c0d947907bc8610a9',1,'arg_error_t::arg_error_t()=default'],['../classarg__error__t.html#a945d0de9657a7a9dd55a1b3c5ce5ba56',1,'arg_error_t::arg_error_t(const arg_error_t &amp;rhs)=default'],['../classarg__error__t.html#aaac2482eb36e4abae306af547b371548',1,'arg_error_t::arg_error_t(arg_error_code_t error_code_)']]],
   ['arg_5fstatus_5ft',['arg_status_t',['../args_8h.html#a940bc27b513d114e526a910ccfa5551e',1,'args.h']]],
   ['args_2ecpp',['args.cpp',['../args_8cpp.html',1,'']]],
   ['args_2eh',['args.h',['../args_8h.html',1,'']]],

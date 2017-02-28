@@ -61,30 +61,30 @@ enum class arg_error_code_t : unsigned char
 /// \brief Class which contains both an \ref arg_error_code_t "error code" and a
 /// human readable message describing that error code.  This class is designed
 /// to be the return value of \ref args_t::parse "parse"
-class arg_error_t
+class parsing_status_t
 {
     
     public:
         
         /// \brief Default constructor
-        inline arg_error_t() = default;
+        inline parsing_status_t() = default;
         
         /// \brief Copy constructor
-        inline arg_error_t(const arg_error_t& rhs) = default;
+        inline parsing_status_t(const parsing_status_t& rhs) = default;
         
         /// \brief Initialization constructor.
-        inline arg_error_t(arg_error_code_t error_code_)
+        inline parsing_status_t(arg_error_code_t error_code_)
         {
             if (unsigned(error_code_) < unsigned(arg_error_code_t::NUM_ERROR_CODES))
             {
                 this->error_code = error_code_;
-                this->error_string = arg_error_t::enum_to_string(error_code_);
+                this->error_string = parsing_status_t::enum_to_string(error_code_);
             }
         }
         
         /// \brief Returns true if the two \ref error_code "error codes" of the two
         /// objects match, ignoring the \ref error_string "error strings".
-        inline bool operator==(const arg_error_t& rhs)
+        inline bool operator==(const parsing_status_t& rhs)
         {
             return this->error_code == rhs.error_code;
         }
@@ -96,13 +96,13 @@ class arg_error_t
             return this->error_code == rhs;
         }
         
-        /// \brief See \ref arg_error_t::operator==(const arg_error_t&)
-        inline bool operator!=(const arg_error_t& rhs)
+        /// \brief See \ref parsing_status_t::operator==(const parsing_status_t&)
+        inline bool operator!=(const parsing_status_t& rhs)
         {
             return !(*this == rhs);
         }
         
-        /// \brief See \ref arg_error_t::operator==(arg_error_code_t)
+        /// \brief See \ref parsing_status_t::operator==(arg_error_code_t)
         inline bool operator!=(arg_error_code_t rhs)
         {
             return !(*this == rhs);
@@ -149,7 +149,7 @@ class args_t
         /// \return \ref arg_error_code_t "SUCCESS" if sufficient parameters
         /// were successfully parsed or defaulted to execute the rest of the
         /// program.
-        arg_error_t parse
+        parsing_status_t parse
         (
             
             /// [in] The same as argc from \ref main.  The number of elements

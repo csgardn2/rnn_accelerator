@@ -105,11 +105,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a72498a833b380378935421786b0869ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2bc4a0bc21ac43c13c15fc06a4dabd0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad2bc4a0bc21ac43c13c15fc06a4dabd0"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classargs__t.html#ad2bc4a0bc21ac43c13c15fc06a4dabd0">args_t</a> (unsigned argc, char const *const *argv, bool *consumed=nullptr)</td></tr>
-<tr class="memdesc:ad2bc4a0bc21ac43c13c15fc06a4dabd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="classargs__t.html#afb3c5a015fcc4fdb07715e8454429447">parse</a>. <br /></td></tr>
+<tr class="memdesc:ad2bc4a0bc21ac43c13c15fc06a4dabd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a>. <br /></td></tr>
 <tr class="separator:ad2bc4a0bc21ac43c13c15fc06a4dabd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb3c5a015fcc4fdb07715e8454429447"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classarg__error__t.html">arg_error_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classargs__t.html#afb3c5a015fcc4fdb07715e8454429447">parse</a> (unsigned argc, char const *const *argv, bool *consumed=nullptr)</td></tr>
-<tr class="memdesc:afb3c5a015fcc4fdb07715e8454429447"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse the command line parameters passed to <a class="el" href="main_8cpp.html#a6f2c4b4455a425e997622c2ecf54afa4">main</a> and initialize all relevant <a class="el" href="classargs__t.html" title="When the command line parameters to main are parsed, they are collected here for easy access...">args_t</a> variables if the corresponding parameter is passed.  <a href="#afb3c5a015fcc4fdb07715e8454429447">More...</a><br /></td></tr>
-<tr class="separator:afb3c5a015fcc4fdb07715e8454429447"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a308f88cf681ab533b1f97d5a5a283f42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classparsing__status__t.html">parsing_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a> (unsigned argc, char const *const *argv, bool *consumed=nullptr)</td></tr>
+<tr class="memdesc:a308f88cf681ab533b1f97d5a5a283f42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse the command line parameters passed to <a class="el" href="main_8cpp.html#a6f2c4b4455a425e997622c2ecf54afa4">main</a> and initialize all relevant <a class="el" href="classargs__t.html" title="When the command line parameters to main are parsed, they are collected here for easy access...">args_t</a> variables if the corresponding parameter is passed.  <a href="#a308f88cf681ab533b1f97d5a5a283f42">More...</a><br /></td></tr>
+<tr class="separator:a308f88cf681ab533b1f97d5a5a283f42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -160,7 +160,7 @@ Static Protected Member Functions</h2></td></tr>
 <tr class="memdesc:ab51672ffc9b303bfd8f5fb26d7a42fb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scan through the elements in argv looking for a particular argument.  <a href="#ab51672ffc9b303bfd8f5fb26d7a42fb2">More...</a><br /></td></tr>
 <tr class="separator:ab51672ffc9b303bfd8f5fb26d7a42fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a565a44903fc2dd32d80a44fedb4ed901"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="args_8h.html#a940bc27b513d114e526a910ccfa5551e">arg_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classargs__t.html#a565a44903fc2dd32d80a44fedb4ed901">parse_unsigned_argument</a> (unsigned argc, char const *const *argv, std::experimental::string_view long_parameter, std::experimental::string_view short_parameter, <a class="el" href="args_8h.html#a940bc27b513d114e526a910ccfa5551e">arg_status_t</a> *arg_status, unsigned *parameter_value, bool *consumed)</td></tr>
-<tr class="memdesc:a565a44903fc2dd32d80a44fedb4ed901"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function for <a class="el" href="classargs__t.html#afb3c5a015fcc4fdb07715e8454429447">parse</a>. Searches for an argument and does a bunch of validation checks on the argument before returning it.  <a href="#a565a44903fc2dd32d80a44fedb4ed901">More...</a><br /></td></tr>
+<tr class="memdesc:a565a44903fc2dd32d80a44fedb4ed901"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function for <a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a>. Searches for an argument and does a bunch of validation checks on the argument before returning it.  <a href="#a565a44903fc2dd32d80a44fedb4ed901">More...</a><br /></td></tr>
 <tr class="separator:a565a44903fc2dd32d80a44fedb4ed901"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9819f44f992ad8592752e96e229182fd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="args_8h.html#a940bc27b513d114e526a910ccfa5551e">arg_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classargs__t.html#a9819f44f992ad8592752e96e229182fd">parse_float_argument</a> (unsigned argc, char const *const *argv, std::experimental::string_view long_parameter, std::experimental::string_view short_parameter, <a class="el" href="args_8h.html#a940bc27b513d114e526a910ccfa5551e">arg_status_t</a> *arg_status, float *parameter_value, bool *consumed)</td></tr>
 <tr class="memdesc:a9819f44f992ad8592752e96e229182fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as <a class="el" href="classargs__t.html#a565a44903fc2dd32d80a44fedb4ed901">parse_unsigned_argument</a> except for floats. This function is not templatized to avoid problems in which the compiler creates a redundant copy of this function for every file that includes this header.  <a href="#a9819f44f992ad8592752e96e229182fd">More...</a><br /></td></tr>
@@ -169,12 +169,12 @@ Static Protected Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>When the command line parameters to <a class="el" href="main_8cpp.html#a6f2c4b4455a425e997622c2ecf54afa4">main</a> are parsed, they are collected here for easy access. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="afb3c5a015fcc4fdb07715e8454429447"></a>
+<a class="anchor" id="a308f88cf681ab533b1f97d5a5a283f42"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classarg__error__t.html">arg_error_t</a> args_t::parse </td>
+          <td class="memname"><a class="el" href="classparsing__status__t.html">parsing_status_t</a> args_t::parse </td>
           <td>(</td>
           <td class="paramtype">unsigned&#160;</td>
           <td class="paramname"><em>argc</em>, </td>
@@ -283,7 +283,7 @@ Static Protected Member Functions</h2></td></tr>
     <tr><td class="paramname">short_parameter</td><td>See <a class="el" href="classargs__t.html#a565a44903fc2dd32d80a44fedb4ed901">args_t::parse_unsigned_argument</a> </td></tr>
     <tr><td class="paramname">arg_status</td><td>See <a class="el" href="classargs__t.html#a565a44903fc2dd32d80a44fedb4ed901">args_t::parse_unsigned_argument</a> </td></tr>
     <tr><td class="paramname">parameter_value</td><td>See <a class="el" href="classargs__t.html#a565a44903fc2dd32d80a44fedb4ed901">args_t::parse_unsigned_argument</a> </td></tr>
-    <tr><td class="paramname">consumed</td><td>See <a class="el" href="classargs__t.html#afb3c5a015fcc4fdb07715e8454429447">parse</a>. </td></tr>
+    <tr><td class="paramname">consumed</td><td>See <a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -352,7 +352,7 @@ Static Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Helper function for <a class="el" href="classargs__t.html#afb3c5a015fcc4fdb07715e8454429447">parse</a>. Searches for an argument and does a bunch of validation checks on the argument before returning it. </p>
+<p>Helper function for <a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a>. Searches for an argument and does a bunch of validation checks on the argument before returning it. </p>
 <dl class="section return"><dt>Returns</dt><dd>The same value that is written back through the arg_status argument. </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -362,7 +362,7 @@ Static Protected Member Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">short_parameter</td><td>Short version of a command line parameter (such as "-w"). </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">arg_status</td><td>See <a class="el" href="args_8h.html#a940bc27b513d114e526a910ccfa5551e">arg_status_t</a>. This is always written back with the parsing status for the given function call. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">parameter_value</td><td>If an argument is successfully parsed, the numeric value after that argument is written back. This pointer is not written back if parsing failed. For example, if argv[4] == "--width" and argv[5] == "42" then you could expect 42 to be written back via the parameter_value pointer. </td></tr>
-    <tr><td class="paramdir"></td><td class="paramname">consumed</td><td>See <a class="el" href="classargs__t.html#afb3c5a015fcc4fdb07715e8454429447">parse</a>. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">consumed</td><td>See <a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -434,7 +434,7 @@ Static Protected Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Feb 28 2017 10:21:27 for Power Map Generator by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 28 2017 10:33:24 for Power Map Generator by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>

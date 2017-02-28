@@ -16,7 +16,7 @@
 
 #include "args.h"
 
-const char* arg_error_t::enum_to_string(arg_error_code_t error_code_)
+const char* parsing_status_t::enum_to_string(arg_error_code_t error_code_)
 {
     
     static const char* error_strings[unsigned(arg_error_code_t::NUM_ERROR_CODES)] = 
@@ -40,7 +40,7 @@ const char* arg_error_t::enum_to_string(arg_error_code_t error_code_)
     
 }
 
-arg_error_t args_t::parse(unsigned argc, char const* const* argv, bool* consumed)
+parsing_status_t args_t::parse(unsigned argc, char const* const* argv, bool* consumed)
 {
     
     // Mark all previous argument data as uninitialized

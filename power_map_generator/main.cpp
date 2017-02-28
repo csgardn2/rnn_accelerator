@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 {
     
     args_t args;
-    arg_error_t argument_parsing_status = args.parse(argc, argv);
+    parsing_status_t argument_parsing_status = args.parse(argc, argv);
     if (argument_parsing_status != arg_error_code_t::SUCCESS)
     {
         std::cerr << argument_parsing_status.error_string << "\"\n";
