@@ -14,6 +14,7 @@
 #include <string>
 
 #include "args.h"
+#include "color_picker.h"
 #include "generate_power_map.h"
 #include "png.h"
 #include "power_map_state.h"
@@ -57,15 +58,18 @@ int main(int argc, char** argv)
     unsigned flat_size = args.width * args.height;
     float* power_map = new float[flat_size];
     
-    // Initialize a PNG writter
-    png_t png_encoder(true, args.width, args.height);
-    unsigned char* color_out = png_encoder.get_grey();
+    // Initialize a PNG writer
+    png_t png_encoder(false, args.width, args.height);
+    unsigned char* red_out = png_encoder.get_red();
+    unsigned char* green_out = png_encoder.get_green();
+    unsigned char* blue_out = png_encoder.get_blue();
     
     // Compute each iteration of the power map, and dump to the requested files
     bool enable_png_write = args.base_png_filename_status == arg_status_t::FOUND;
     bool enable_txt_write = args.base_txt_filename_status == arg_status_t::FOUND;
     std::string filename;
     unsigned previous_progress = 0;
+    float png_white_threshold = args.max_peak_amplitude * 6.0f; // Empirical - Feel free to tweak.
     for (unsigned iy = 0, bound = args.time_steps; iy < bound; iy++)
     {
         
@@ -79,12 +83,10 @@ int main(int argc, char** argv)
             
             for (unsigned ix = 0; ix < flat_size; ix++)
             {
-                signed cur_color = signed(power_map[ix]);
-                if (cur_color < 0)
-                    cur_color = 0;
-                if (cur_color > 255)
-                    cur_color = 255;
-                color_out[ix] = cur_color;
+                color_t cur_color = pick_color(power_map[ix], 0.0f, png_white_threshold);
+                red_out[ix] = cur_color.red;
+                green_out[ix] = cur_color.green;
+                blue_out[ix] = cur_color.blue;
             }
             
             filename = args.base_png_filename;

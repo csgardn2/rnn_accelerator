@@ -3,12 +3,12 @@ EXENAME=power_map_generator
 COMPILEFLAGS=-Wall -Wextra -ansi -Wfatal-errors -std=c++1z
 LINKFLAGS=-Wall -Wextra -ansi -Wfatal-errors
 LIBS=-lpng
-ARGS=--width 256 --height 256 --time-steps 256 --base-png-filename power --base-txt-filename power
+ARGS=--width 256 --height 256 --time-steps 64 --base-png-filename power
 
 all: documentation $(EXENAME)
 
 # Add additional .o files on the line below (after main.o)
-$(EXENAME): args.o hotspot.o main.o generate_power_map.o png.o power_map_state.o main.o
+$(EXENAME): args.o color_picker.o hotspot.o main.o generate_power_map.o png.o power_map_state.o main.o
 	$(COMPILER) $(LINKFLAGS) -o $(EXENAME) $^ $(LIBS)
 	@echo "*** COMPILE_SUCCESSFUL ***"
 
@@ -17,6 +17,9 @@ $(EXENAME): args.o hotspot.o main.o generate_power_map.o png.o power_map_state.o
 # Add more .cpp -> .o compile commands here
 
 args.o: args.cpp args.h
+	$(COMPILER) $(COMPILEFLAGS) -c -o $@ $<
+
+color_picker.o: color_picker.cpp color_picker.h
 	$(COMPILER) $(COMPILEFLAGS) -c -o $@ $<
 
 hotspot.o: hotspot.cpp hotspot.h
