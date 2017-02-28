@@ -22,14 +22,37 @@ const char* args_t::enum_to_string(parsing_status_t parsing_status)
     static const char* error_strings[unsigned(parsing_status_t::NUM_ERROR_CODES)] = 
     {
         "Success",
+        
         "Requied command line parameter --width / -w was not passed.",
         "Command line parameter --width / -w was followed by an invalid number.",
         "Requied command line parameter --height / -h was not passed.",
         "Command line parameter --height / -h was followed by an invalid number.",
         "Requied command line parameter --time-steps / -t was not passed.",
         "Command line parameter --time-steps / -t was followed by an invalid number.",
+        
         "Required command line parameter --base-filename / -o was not passed.",
         "Command line parameter --base-filename / -o must be followed by a string.",
+        
+        "Command line parameter --max-hotspots / -h was followed by an invalid number.",
+        
+        "Command line parameter --min-peak-amplitude / -a was followed by an invalid number.",
+        "Command line parameter --min-peak-amplitude / -a was greater than the default max peak amplitude.",
+        "Command line parameter --max-peak-amplitude / -A was followed by an invalid number.",
+        "Command line parameter --max-peak-amplitude / -A was less than the default min peak amplitude.",
+        "Command line parameter --min-peak-amplitude / -a was greater than --max-peak-amplitude / -A.",
+        
+        "Command line parameter --min-stddev / -s was followed by an invalid number.",
+        "Command line parameter --min-stddev / -a was greater than the default max stddev.",
+        "Command line parameter --max-stddev / -S was followed by an invalid number.",
+        "Command line parameter --max-stddev / -a was less than the default min stddev.",
+        "Command line parameter --min-stddev / -s was greater than --max-stddev / -S.",
+        
+        "Command line parameter --min-aging-rate / -r was followed by an invalid number.",
+        "Command line parameter --min-aging-rate / -r was greater than the default max aging rate.",
+        "Command line parameter --max-aging-rate / -R was followed by an invalid number.",
+        "Command line parameter --max-aging-rate / -R was less than the default min aging rate.",
+        "Command line parameter --min-aging-rate / -r was greater than --max-aging-rate / -R."
+        
     };
     
     unsigned ix = unsigned(parsing_status);
@@ -48,6 +71,13 @@ parsing_status_t args_t::parse(unsigned argc, char const* const* argv, bool* con
     this->height_status = arg_status_t::NOT_FOUND;
     this->time_steps_status = arg_status_t::NOT_FOUND;
     this->base_filename_status = arg_status_t::NOT_FOUND;
+    this->max_hotspots_status = arg_status_t::NOT_FOUND;
+    this->min_peak_amplitude_status = arg_status_t::NOT_FOUND;
+    this->max_peak_amplitude_status = arg_status_t::NOT_FOUND;
+    this->min_stddev_status = arg_status_t::NOT_FOUND;
+    this->max_stddev_status = arg_status_t::NOT_FOUND;
+    this->min_aging_rate_status = arg_status_t::NOT_FOUND;
+    this->max_aging_rate_status = arg_status_t::NOT_FOUND;
     
     bool enable_consumption_tracking = consumed != nullptr;
     if (enable_consumption_tracking)
@@ -110,7 +140,147 @@ parsing_status_t args_t::parse(unsigned argc, char const* const* argv, bool* con
         consumed[match + 1] = true;
     this->base_filename = argv[match + 1];
     this->base_filename_status = arg_status_t::FOUND;
-        
+    
+    // --max-hotspots -m
+    switch (args_t::parse_unsigned_argument(
+        argc, argv, "--max-hotspots", "-h", &(this->max_hotspots_status), &(this->max_hotspots), consumed
+    )){
+        case arg_status_t::NOT_FOUND:
+            this->max_hotspots = args_t::default_max_hotspots;
+            this->max_hotspots_status = arg_status_t::DEFAULTED;
+            break;
+        case arg_status_t::INVALID:
+            return parsing_status_t::MAX_HOTSPOTS_INVALID;
+        default:
+            break;
+    }
+    
+    // --min-peak-amplitude -a
+    switch (args_t::parse_float_argument(
+        argc, argv, "--min-peak-amplitude", "-a", &(this->min_peak_amplitude_status), &(this->min_peak_amplitude), consumed
+    )){
+        case arg_status_t::NOT_FOUND:
+            this->min_peak_amplitude = args_t::default_min_peak_amplitude;
+            this->min_peak_amplitude_status = arg_status_t::DEFAULTED;
+            break;
+        case arg_status_t::INVALID:
+            return parsing_status_t::MIN_PEAK_AMPLITUDE_INVALID;
+        default:
+            break;
+    }
+    
+    // --max-peak-amplitude -A TODO
+    switch (args_t::parse_float_argument(
+        argc, argv, "--max-peak-amplitude", "-A", &(this->max_peak_amplitude_status), &(this->max_peak_amplitude), consumed
+    )){
+        case arg_status_t::NOT_FOUND:
+            this->max_peak_amplitude = args_t::default_max_peak_amplitude;
+            this->max_peak_amplitude_status = arg_status_t::DEFAULTED;
+            break;
+        case arg_status_t::INVALID:
+            return parsing_status_t::MAX_PEAK_AMPLITUDE_INVALID;
+        default:
+            break;
+    }
+    
+    if (this->min_peak_amplitude > this->max_peak_amplitude)
+    {
+        if (this->min_peak_amplitude_status == arg_status_t::DEFAULTED)
+        {
+            this->max_peak_amplitude_status = arg_status_t::INVALID;
+            return parsing_status_t::MAX_PEAK_AMPLITUDE_CONFLICTS_WITH_DEFAULT;
+        } else if (this->max_peak_amplitude_status == arg_status_t::DEFAULTED) {
+            this->min_peak_amplitude_status = arg_status_t::INVALID;
+            return parsing_status_t::MIN_PEAK_AMPLITUDE_CONFLICTS_WITH_DEFAULT;
+        } else {
+            return parsing_status_t::PEAK_AMPLITUDE_CONFLICT;
+        }
+    }
+    
+    // --min-stddev -s
+    switch (args_t::parse_float_argument(
+        argc, argv, "--min-stddev", "-s", &(this->min_stddev_status), &(this->min_stddev), consumed
+    )){
+        case arg_status_t::NOT_FOUND:
+            this->min_stddev = args_t::default_min_stddev;
+            this->min_stddev_status = arg_status_t::DEFAULTED;
+            break;
+        case arg_status_t::INVALID:
+            return parsing_status_t::MIN_STDDEV_INVALID;
+        default:
+            break;
+    }
+    
+    // --max-stddev -S
+    switch (args_t::parse_float_argument(
+        argc, argv, "--max-stddev", "-S", &(this->max_stddev_status), &(this->max_stddev), consumed
+    )){
+        case arg_status_t::NOT_FOUND:
+            this->max_stddev = args_t::default_max_stddev;
+            this->max_stddev_status = arg_status_t::DEFAULTED;
+            break;
+        case arg_status_t::INVALID:
+            return parsing_status_t::MAX_STDDEV_INVALID;
+        default:
+            break;
+    }
+    
+    if (this->min_stddev > this->max_stddev)
+    {
+        if (this->min_stddev_status == arg_status_t::DEFAULTED)
+        {
+            this->max_stddev_status = arg_status_t::INVALID;
+            return parsing_status_t::MAX_STDDEV_CONFLICTS_WITH_DEFAULT;
+        } else if (this->max_stddev_status == arg_status_t::DEFAULTED) {
+            this->min_stddev_status = arg_status_t::INVALID;
+            return parsing_status_t::MIN_STDDEV_CONFLICTS_WITH_DEFAULT;
+        } else {
+            return parsing_status_t::STDDEV_CONFLICT;
+        }
+    }
+    
+    // --min-aging-rate -r
+    switch (args_t::parse_float_argument(
+        argc, argv, "--min-aging-rate", "-a", &(this->min_aging_rate_status), &(this->min_aging_rate), consumed
+    )){
+        case arg_status_t::NOT_FOUND:
+            this->min_aging_rate = args_t::default_min_aging_rate;
+            this->min_aging_rate_status = arg_status_t::DEFAULTED;
+            break;
+        case arg_status_t::INVALID:
+            return parsing_status_t::MIN_AGING_RATE_INVALID;
+        default:
+            break;
+    }
+    
+    // --max-aging-rate -R
+    switch (args_t::parse_float_argument(
+        argc, argv, "--max-aging-rate", "-A", &(this->max_aging_rate_status), &(this->max_aging_rate), consumed
+    )){
+        case arg_status_t::NOT_FOUND:
+            this->max_aging_rate = args_t::default_max_aging_rate;
+            this->max_aging_rate_status = arg_status_t::DEFAULTED;
+            break;
+        case arg_status_t::INVALID:
+            return parsing_status_t::MAX_AGING_RATE_INVALID;
+        default:
+            break;
+    }
+    
+    if (this->min_aging_rate > this->max_aging_rate)
+    {
+        if (this->min_aging_rate_status == arg_status_t::DEFAULTED)
+        {
+            this->max_aging_rate_status = arg_status_t::INVALID;
+            return parsing_status_t::MAX_AGING_RATE_CONFLICTS_WITH_DEFAULT;
+        } else if (this->max_aging_rate_status == arg_status_t::DEFAULTED) {
+            this->min_aging_rate_status = arg_status_t::INVALID;
+            return parsing_status_t::MIN_AGING_RATE_CONFLICTS_WITH_DEFAULT;
+        } else {
+            return parsing_status_t::AGING_RATE_CONFLICT;
+        }
+    }
+    
     // Sufficient arguments parsed successfully
     return parsing_status_t::SUCCESS;
     
@@ -235,11 +405,6 @@ arg_status_t args_t::parse_float_argument
         // atoi causes undefined behavior if an invalid string is passed.
         converted = std::stof(argv[match + 1]);
     } catch (std::exception error_code) {
-        *arg_status = arg_status_t::INVALID;
-        return arg_status_t::INVALID;
-    }
-    if (converted < 0)
-    {
         *arg_status = arg_status_t::INVALID;
         return arg_status_t::INVALID;
     }

@@ -133,7 +133,9 @@ class hotspot_t
         /// shrinking.
         hotspot_stage_t stage;
         
-        /// \brief See \ref hotspot_t "class description".
+        /// \brief A threshold which determines when this hotspot stops 
+        /// \ref hotspot_stage_t "GROWING" and begins \ref hotspot_stage_t
+        /// "SHRINKING".
         float peak_amplitude;
         
         /// \brief This is the amount that is added or subtracted from 

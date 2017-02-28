@@ -11,7 +11,6 @@
 #ifndef HEADER_GUARD_ARGS
 #define HEADER_GUARD_ARGS
 
-#include <iostream>
 #include <string>
 #include <experimental/string_view>
 
@@ -44,14 +43,36 @@ enum class parsing_status_t : unsigned char
 {
     
     SUCCESS,
+    
     WIDTH_NOT_PASSED,
     WIDTH_INVALID,
     HEIGHT_NOT_PASSED,
     HEIGHT_INVALID,
     TIME_STEPS_NOT_PASSED,
     TIME_STEPS_INVALID,
+    
     BASE_FILENAME_NOT_PASSED,
     BASE_FILENAME_INVALID,
+    
+    MAX_HOTSPOTS_INVALID,
+    
+    MIN_PEAK_AMPLITUDE_INVALID,
+    MIN_PEAK_AMPLITUDE_CONFLICTS_WITH_DEFAULT,
+    MAX_PEAK_AMPLITUDE_INVALID,
+    MAX_PEAK_AMPLITUDE_CONFLICTS_WITH_DEFAULT,
+    PEAK_AMPLITUDE_CONFLICT,
+    
+    MIN_STDDEV_INVALID,
+    MIN_STDDEV_CONFLICTS_WITH_DEFAULT,
+    MAX_STDDEV_INVALID,
+    MAX_STDDEV_CONFLICTS_WITH_DEFAULT,
+    STDDEV_CONFLICT,
+    
+    MIN_AGING_RATE_INVALID,
+    MIN_AGING_RATE_CONFLICTS_WITH_DEFAULT,
+    MAX_AGING_RATE_INVALID,
+    MAX_AGING_RATE_CONFLICTS_WITH_DEFAULT,
+    AGING_RATE_CONFLICT,
     
     /// \brief This element MUST be the last enum.
     NUM_ERROR_CODES
@@ -71,7 +92,14 @@ class args_t
           : width_status(arg_status_t::NOT_FOUND),
             height_status(arg_status_t::NOT_FOUND),
             time_steps_status(arg_status_t::NOT_FOUND),
-            base_filename_status(arg_status_t::NOT_FOUND)
+            base_filename_status(arg_status_t::NOT_FOUND),
+            max_hotspots_status(arg_status_t::NOT_FOUND),
+            min_peak_amplitude_status(arg_status_t::NOT_FOUND),
+            max_peak_amplitude_status(arg_status_t::NOT_FOUND),
+            min_stddev_status(arg_status_t::NOT_FOUND),
+            max_stddev_status(arg_status_t::NOT_FOUND),
+            min_aging_rate_status(arg_status_t::NOT_FOUND),
+            max_aging_rate_status(arg_status_t::NOT_FOUND)
         {
             // Intentionally left blank
         }
@@ -85,7 +113,7 @@ class args_t
         /// \brief Parse the command line parameters passed to \ref main and
         /// initialize all relevant args_t variables if the corresponding
         /// parameter is passed.
-        /// \return \ref arg_error_code_t "SUCCESS" if sufficient parameters
+        /// \return \ref parsing_status_t "SUCCESS" if sufficient parameters
         /// were successfully parsed or defaulted to execute the rest of the
         /// program.
         parsing_status_t parse
@@ -109,6 +137,7 @@ class args_t
             
         );
         
+        /// \brief Create a human-readable error message suitable for printing.
         static const char* enum_to_string(parsing_status_t parsing_status);
         
         /// \brief Required.\n
@@ -116,15 +145,24 @@ class args_t
         /// The number of columns in the output power map.
         unsigned width;
         
+        /// See \ref width and arg_status_t
+        arg_status_t width_status;
+        
         /// \brief Required.\n
         /// Usage: --height -h [integer >= 0]\n
         /// The number of rows in the output power map.
         unsigned height;
         
+        /// See \ref height and arg_status_t
+        arg_status_t height_status;
+        
         /// \brief Required.\n
         /// Usage: --time-steps -t [integer >= 0]\n
         /// The number output power maps (files) to generate.
         unsigned time_steps;
+        
+        /// See \ref time_steps and arg_status_t
+        arg_status_t time_steps_status;
         
         /// \brief Required.\n
         /// Usage: --base-filename -o [string]\n
@@ -136,17 +174,122 @@ class args_t
         /// 'lard_1.txt', 'lard_2.txt', and 'lard_3.txt'.
         std::string base_filename;
         
-        /// \brief see \ref width
-        arg_status_t width_status;
-        
-        /// \brief see \ref height
-        arg_status_t height_status;
-        
-        /// \brief see \ref time_steps
-        arg_status_t time_steps_status;
-        
-        /// \brief see \ref base_filename
+        /// See \ref base_filename and arg_status_t
         arg_status_t base_filename_status;
+        
+        /// \brief Optional\n
+        /// Usage: --max-hotspots -h [integer >= 0]\n
+        /// See \ref args_t::default_max_hotspots "default value" and \ref
+        /// power_map_state_t::max_hotspots
+        unsigned max_hotspots;
+        
+        /// See \ref power_map_state_t::max_hotspots and arg_status_t
+        arg_status_t max_hotspots_status;
+        
+        /// \brief If the associated argument is not passed on the command line,
+        /// this value is assumed.  Note that passing and \ref arg_status_t
+        /// "INVALID" or mal-formed argument still generates an error and the
+        /// default value will not be assumed.
+        static const unsigned default_max_hotspots = 1024;
+        
+        /// \brief Optional\n
+        /// Usage: --min-peak-amplitude -a [float >= 0]\n
+        /// The number passed here must be less than \ref
+        /// args_t::max_peak_amplitude "max_peak_amplitude".
+        /// See \ref args_t::default_min_peak_amplitude "default value" and \ref
+        /// power_map_state_t::min_peak_amplitude
+        float min_peak_amplitude;
+        
+        /// See \ref power_map_state_t::min_peak_amplitude and arg_status_t
+        arg_status_t min_peak_amplitude_status;
+        
+        /// \brief If the associated argument is not passed on the command line,
+        /// this value is assumed.  Note that passing and \ref arg_status_t
+        /// "INVALID" or mal-formed argument still generates an error and the
+        /// default value will not be assumed.
+        static constexpr const float default_min_peak_amplitude = 10.0f;
+        
+        /// \brief Optional\n
+        /// Usage: --max-peak-amplitude -A [float >= 0]\n
+        /// The number passed here must be greater than \ref
+        /// args_t::min_peak_amplitude "min_peak_amplitude".
+        /// See \ref args_t::default_max_peak_amplitude "default value" and \ref
+        /// power_map_state_t::max_peak_amplitude
+        float max_peak_amplitude;
+        
+        /// See \ref power_map_state_t::max_peak_amplitude and arg_status_t
+        arg_status_t max_peak_amplitude_status;
+        
+        /// \brief If the associated argument is not passed on the command line,
+        /// this value is assumed.  Note that passing and \ref arg_status_t
+        /// "INVALID" or mal-formed argument still generates an error and the
+        /// default value will not be assumed.
+        static constexpr const float default_max_peak_amplitude = 50.0f;
+        
+        /// \brief Optional\n
+        /// Usage: --min-stddev -s [float >= 0]\n
+        /// The number passed here must be less than \ref args_t::max_stddev
+        /// "max_stddev".  See \ref args_t::default_min_stddev "default value"
+        /// and \ref power_map_state_t::min_stddev
+        float min_stddev;
+        
+        /// See \ref power_map_state_t::min_stddev and arg_status_t
+        arg_status_t min_stddev_status;
+        
+        /// \brief If the associated argument is not passed on the command line,
+        /// this value is assumed.  Note that passing and \ref arg_status_t
+        /// "INVALID" or mal-formed argument still generates an error and the
+        /// default value will not be assumed.
+        static constexpr const float default_min_stddev = 5.0f;
+        
+        /// \brief Optional\n
+        /// Usage --max-stddev -S [float >= 0]\n
+        /// The number passed here must be greater than \ref args_t::min_stddev
+        /// "min_stddev".  See \ref args_t::default_max_stddev "default value"
+        /// and \ref power_map_state_t::max_stddev
+        float max_stddev;
+        
+        /// See \ref power_map_state_t::max_stddev and arg_status_t
+        arg_status_t max_stddev_status;
+        
+        /// \brief If the associated argument is not passed on the command line,
+        /// this value is assumed.  Note that passing and \ref arg_status_t
+        /// "INVALID" or mal-formed argument still generates an error and the
+        /// default value will not be assumed.
+        static constexpr const float default_max_stddev = 15.0f;
+        
+        /// \brief Optional\n
+        /// Usage: --min-aging-rate -r [float > 0]\n
+        /// The number passed here must be less than \ref args_t::max_aging_rate
+        /// "max_aging_rate".  See \ref args_t::default_min_aging_rate "default
+        /// value" and \ref power_map_state_t::min_aging_rate
+        float min_aging_rate;
+        
+        /// See \ref power_map_state_t::min_aging_rate and arg_status_t
+        arg_status_t min_aging_rate_status;
+        
+        /// \brief If the associated argument is not passed on the command line,
+        /// this value is assumed.  Note that passing and \ref arg_status_t
+        /// "INVALID" or mal-formed argument still generates an error and the
+        /// default value will not be assumed.
+        static constexpr const float default_min_aging_rate = 5.0f;
+        
+        /// \brief Optional\n
+        /// Usage: --max-aging-rate -R [float > 0]\n
+        /// The number passed here must be greater than \ref
+        /// args_t::min_aging_rate "min_aging_rate".  See \ref
+        /// args_t::default_max_aging_rate "default value" and \ref
+        /// power_map_state_t::max_aging_rate
+        float max_aging_rate;
+        
+        /// See \ref power_map_state_t::max_aging_rate and arg_status_t
+        arg_status_t max_aging_rate_status;
+        
+        /// \brief If the associated argument is not passed on the command line,
+        /// this value is assumed.  Note that passing and \ref arg_status_t
+        /// "INVALID" or mal-formed argument still generates an error and the
+        /// default value will not be assumed.
+        static constexpr const float default_max_aging_rate = 20.0f;
         
     protected:
         

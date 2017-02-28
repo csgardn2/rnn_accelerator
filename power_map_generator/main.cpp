@@ -23,33 +23,48 @@
 int main(int argc, char** argv)
 {
     
+    bool* consumed = new bool[argc];
     args_t args;
-    parsing_status_t parsing_status = args.parse(argc, argv);
+    parsing_status_t parsing_status = args.parse(argc, argv, consumed);
     if (parsing_status != parsing_status_t::SUCCESS)
     {
-        std::cerr << args_t::enum_to_string(parsing_status) << "\"\n";
+        std::cerr << "Error.  " << args_t::enum_to_string(parsing_status) << '\n';
+        delete[] consumed;
         return -1;
     }
+    for (signed ix = 1; ix < argc; ix++)
+    {
+        if (!consumed[ix])
+            std::cerr << "Warning.  Ignoring unrecognized argument \"" << argv[ix] << "\"\n";
+    }
+    delete[] consumed;
     
-    std::cout << "width = " << args.width << '\n'
+    std::cout
+        << "width = " << args.width << '\n'
         << "height = " << args.height << '\n'
         << "time_steps = " << args.time_steps << '\n'
-        << "base_filename = \"" << args.base_filename << "\"\n";
+        << "base_filename = \"" << args.base_filename << "\"\n"
+        << "max_hotspots = " << args.max_hotspots << '\n'
+        << "min_peak_amplitude = " << args.min_peak_amplitude << '\n'
+        << "max_peak_amplitude = " << args.max_peak_amplitude << '\n'
+        << "min_stddev = " << args.min_stddev << '\n'
+        << "max_stddev = " << args.max_stddev << '\n'
+        << "min_aging_rate = " << args.min_aging_rate << '\n'
+        << "max_aging_rate = " << args.max_aging_rate << '\n';
     
     return 0;
-    
     
     power_map_state_t power_map_state
     (
         args.width,
         args.height,
-        1024,               // Max hotspots
-        10.0f,              // Min peak amplitude
-        50.0f,              // Max peak amplitude
-        5.0f,               // Min stdev
-        15.0f,              // Max stddev
-        5.0f,               // Min aging rate
-        20.0f               // Max aging rate
+        args.max_hotspots,
+        args.min_peak_amplitude,
+        args.max_peak_amplitude,
+        args.min_stddev,
+        args.max_stddev,
+        args.min_aging_rate,
+        args.max_aging_rate
     );
     
     png_t encoder(true, args.width, args.height);

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['time_5fsteps',['time_steps',['../classargs__t.html#a0106dec4b792d9d242c4f4ee24b1d2e6',1,'args_t']]],
-  ['time_5fsteps_5fstatus',['time_steps_status',['../classargs__t.html#a64158afd63d724e05e5912d47e4c0cd7',1,'args_t']]]
+  ['stage',['stage',['../classhotspot__t.html#a06e26500acb27e219bcbbc97fc05946e',1,'hotspot_t']]],
+  ['stddev_5fx',['stddev_x',['../classhotspot__t.html#aa768a382088fc74642db7766ba71a4a1',1,'hotspot_t']]],
+  ['stddev_5fy',['stddev_y',['../classhotspot__t.html#ad635d72a17f61e81dc5c7b54a1ec7eb3',1,'hotspot_t']]]
 ];

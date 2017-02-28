@@ -1,4 +1,19 @@
 var searchData=
 [
-  ['peak_5famplitude',['peak_amplitude',['../classhotspot__t.html#a6f5c87680431cacd940216ee364fcd79',1,'hotspot_t']]]
+  ['max_5faging_5frate',['max_aging_rate',['../classargs__t.html#a44fce3ef2088081e06d83ec67876ce8f',1,'args_t::max_aging_rate()'],['../classpower__map__state__t.html#aacc54caa57bbec46dc2206272db810af',1,'power_map_state_t::max_aging_rate()']]],
+  ['max_5faging_5frate_5fstatus',['max_aging_rate_status',['../classargs__t.html#ac90dcf03edf9672d89703d29c1bd06cc',1,'args_t']]],
+  ['max_5fhotspots',['max_hotspots',['../classargs__t.html#aed2a15f2abfc89ab34f2d584b893337f',1,'args_t::max_hotspots()'],['../classpower__map__state__t.html#aeb52e7a696f3e192b791cb6d7336ba1f',1,'power_map_state_t::max_hotspots()']]],
+  ['max_5fhotspots_5fstatus',['max_hotspots_status',['../classargs__t.html#a5ac8ad0bc6ae2b58667301ac2d9ba7c2',1,'args_t']]],
+  ['max_5fpeak_5famplitude',['max_peak_amplitude',['../classargs__t.html#a903fcfb064fb55911f09e8a3dfd3cd15',1,'args_t::max_peak_amplitude()'],['../classpower__map__state__t.html#afe2eb3103de0127b7f5eba76292c9da2',1,'power_map_state_t::max_peak_amplitude()']]],
+  ['max_5fpeak_5famplitude_5fstatus',['max_peak_amplitude_status',['../classargs__t.html#a98d4fbb404537af4b5687ebbe47f1327',1,'args_t']]],
+  ['max_5fstddev',['max_stddev',['../classargs__t.html#aede7e7c1f9f1192124e9d7cf08f63655',1,'args_t::max_stddev()'],['../classpower__map__state__t.html#ad02f382715c77f225e0bca66484e293a',1,'power_map_state_t::max_stddev()']]],
+  ['max_5fstddev_5fstatus',['max_stddev_status',['../classargs__t.html#ac7fbbaa18b787d000b771078daa44bf9',1,'args_t']]],
+  ['mean_5fx',['mean_x',['../classhotspot__t.html#a09bc64c109ada6b7d6901342a11544b0',1,'hotspot_t']]],
+  ['mean_5fy',['mean_y',['../classhotspot__t.html#a8959506af5b146d43d12121a853cd32a',1,'hotspot_t']]],
+  ['min_5faging_5frate',['min_aging_rate',['../classargs__t.html#af96f6f8ed63fb58939e2dc0149cfa121',1,'args_t::min_aging_rate()'],['../classpower__map__state__t.html#acf82dbe7f40b1807ee258d9a54627c05',1,'power_map_state_t::min_aging_rate()']]],
+  ['min_5faging_5frate_5fstatus',['min_aging_rate_status',['../classargs__t.html#aa08d1ee2175061b4ba9e3fd922d420b6',1,'args_t']]],
+  ['min_5fpeak_5famplitude',['min_peak_amplitude',['../classargs__t.html#aca84f8c105ac2d1dfa131542e514a574',1,'args_t::min_peak_amplitude()'],['../classpower__map__state__t.html#ab13a1b7c30287ad89fe4f34e147f9614',1,'power_map_state_t::min_peak_amplitude()']]],
+  ['min_5fpeak_5famplitude_5fstatus',['min_peak_amplitude_status',['../classargs__t.html#a6fe731658313f22077857c2065f74758',1,'args_t']]],
+  ['min_5fstddev',['min_stddev',['../classargs__t.html#a4b2b3808bcfb1748feec6b7e36bd3d5d',1,'args_t::min_stddev()'],['../classpower__map__state__t.html#a92b8ddbd3e11e3a5e13c5187594c040a',1,'power_map_state_t::min_stddev()']]],
+  ['min_5fstddev_5fstatus',['min_stddev_status',['../classargs__t.html#a0817722a7ee907f0fad7e876c955107b',1,'args_t']]]
 ];
