@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <string>
+#include <experimental/string_view>
 
 /// \brief Used to indicate weather an parameter was passed via the command line
 /// or not.
@@ -44,16 +45,13 @@ enum class arg_error_code_t : unsigned char
     
     SUCCESS,
     WIDTH_NOT_PASSED,
-    WIDTH_WITHOUT_ARGUMENT,
     WIDTH_INVALID,
     HEIGHT_NOT_PASSED,
-    HEIGHT_WITHOUT_ARGUMENT,
     HEIGHT_INVALID,
     TIME_STEPS_NOT_PASSED,
-    TIME_STEPS_WITHOUT_ARGUMENT,
     TIME_STEPS_INVALID,
     BASE_FILENAME_NOT_PASSED,
-    BASE_FILENAME_WITHOUT_ARGUEMENT,
+    BASE_FILENAME_INVALID,
     
     /// \brief This element MUST be the last enum.
     NUM_ERROR_CODES
@@ -140,7 +138,7 @@ class args_t
         }
         
         /// \brief See \ref parse
-        inline args_t(unsigned argc, char** argv, bool* consumed = nullptr)
+        inline args_t(unsigned argc, char const* const* argv, bool* consumed = nullptr)
         {
             this->parse(argc, argv, consumed);
         }
@@ -159,7 +157,7 @@ class args_t
             unsigned argc,
             /// [in] Array of strings passed from \ref main.  Each is a token
             /// passed as a command line parameter.
-            char** argv,
+            char const* const* argv,
             
             /// [out].  Optional.  If you want to verify which command line
             /// parameters were recognized and consumed, allocate an pass an
@@ -208,6 +206,108 @@ class args_t
         
         /// \brief see \ref base_filename
         arg_status_t base_filename_status;
+        
+    protected:
+        
+        /// \brief Scan through the elements in argv looking for a particular argument
+        /// \return The index into argv where either long_parameter or short_parameter
+        /// is found, whichever came first.  Returns UINT_MAX if neither the long nor
+        /// short version were found.
+        static unsigned search_argv
+        (
+            
+            /// [in] Number of elements in argv.  Same as from \ref main
+            unsigned argc,
+            
+            /// [in] Array of tokenzied arguments passed to \ref main
+            char const* const* argv,
+            
+            /// [in] Long version of a command line parameter (such as "--width").
+            // TODO Please change std::experimental::string_view to std::string_view
+            // when it's officially released.
+            std::experimental::string_view long_parameter,
+            
+            /// [in] Short version of a command line parameter (such as "-w").
+            // TODO Please change std::experimental::string_view to std::string_view
+            // when it's officially released.
+            std::experimental::string_view short_parameter
+            
+        );
+
+        /// \brief Helper function for \ref args_t::parse "parse".  Searches
+        /// for an argument and does a bunch of validation checks on the
+        /// argument before returning it.
+        /// \return The same value that is written back through the arg_status
+        /// argument.
+        static arg_status_t parse_unsigned_argument
+        (
+            
+            /// [in] Number of elements in argv.  Same as from \ref main
+            unsigned argc,
+            
+            /// [in] Array of tokenzied arguments passed to \ref main
+            char const* const* argv,
+            
+            /// [in] Long version of a command line parameter (such as "--width").
+            // TODO Please change std::experimental::string_view to std::string_view
+            // when it's officially released.
+            std::experimental::string_view long_parameter,
+            
+            /// [in] Short version of a command line parameter (such as "-w").
+            // TODO Please change std::experimental::string_view to std::string_view
+            // when it's officially released.
+            std::experimental::string_view short_parameter,
+            
+            /// [out] See \ref arg_status_t.  This is always written back with the
+            /// parsing status for the given function call.
+            arg_status_t* arg_status,
+            
+            /// [out] If an argument is successfully parsed, the numeric value after
+            /// that argument is written back.  This pointer is not written back if
+            /// parsing failed.  For example, if argv[4] == "--width" and argv[5] == "42"
+            /// then you could expect 42 to be written back via the parameter_value
+            /// pointer.
+            unsigned* parameter_value,
+            
+            /// See \ref args_t::parse "parse".
+            bool* consumed
+            
+        );
+        
+        /// \brief Same as \ref args_t::parse_unsigned_argument
+        /// "parse_unsigned_argument" except for floats.  This function is not
+        /// templatized to avoid problems in which the compiler creates a
+        /// redundant copy of this function for every file that includes this
+        /// header.
+        static arg_status_t parse_float_argument
+        (
+            
+            /// See \ref args_t::parse_unsigned_argument
+            unsigned argc,
+            
+            /// See \ref args_t::parse_unsigned_argument
+            char const* const* argv,
+            
+            /// See \ref args_t::parse_unsigned_argument
+            // TODO Please change std::experimental::string_view to std::string_view
+            // when it's officially released.
+            std::experimental::string_view long_parameter,
+            
+            /// See \ref args_t::parse_unsigned_argument
+            // TODO Please change std::experimental::string_view to std::string_view
+            // when it's officially released.
+            std::experimental::string_view short_parameter,
+            
+            /// See \ref args_t::parse_unsigned_argument
+            arg_status_t* arg_status,
+            
+            /// See \ref args_t::parse_unsigned_argument
+            float* parameter_value,
+            
+            /// See \ref args_t::parse "parse".
+            bool* consumed
+            
+        );
         
 };
 

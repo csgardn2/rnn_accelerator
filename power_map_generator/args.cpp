@@ -16,29 +16,112 @@
 
 #include "args.h"
 
-/// \brief Scan through the elements in argv looking for a particular argument
-/// \return The index into argv where either long_parameter or short_parameter
-/// is found, whichever came first.  Returns UINT_MAX if neither the long nor
-/// short version were found.
-unsigned search_argv
+const char* arg_error_t::enum_to_string(arg_error_code_t error_code_)
+{
+    
+    static const char* error_strings[unsigned(arg_error_code_t::NUM_ERROR_CODES)] = 
+    {
+        "Success",
+        "Requied command line parameter --width / -w was not passed.",
+        "Command line parameter --width / -w was followed by an invalid number.",
+        "Requied command line parameter --height / -h was not passed.",
+        "Command line parameter --height / -h was followed by an invalid number.",
+        "Requied command line parameter --time-steps / -t was not passed.",
+        "Command line parameter --time-steps / -t was followed by an invalid number.",
+        "Required command line parameter --base-filename / -o was not passed.",
+        "Command line parameter --base-filename / -o must be followed by a string.",
+    };
+    
+    unsigned ix = unsigned(error_code_);
+    if (ix < unsigned(arg_error_code_t::NUM_ERROR_CODES))
+        return error_strings[ix];
+    else
+        return "";
+    
+}
+
+arg_error_t args_t::parse(unsigned argc, char const* const* argv, bool* consumed)
+{
+    
+    // Mark all previous argument data as uninitialized
+    this->width_status = arg_status_t::NOT_FOUND;
+    this->height_status = arg_status_t::NOT_FOUND;
+    this->time_steps_status = arg_status_t::NOT_FOUND;
+    this->base_filename_status = arg_status_t::NOT_FOUND;
+    
+    bool enable_consumption_tracking = consumed != nullptr;
+    if (enable_consumption_tracking)
+    {
+        for (unsigned ix = 0; ix < argc; ix++)
+            consumed[ix] = false;
+    }
+    
+    // --width -w
+    switch (args_t::parse_unsigned_argument(
+        argc, argv, "--width", "-w", &(this->width_status), &(this->width), consumed
+    )){
+        case arg_status_t::NOT_FOUND:
+            return arg_error_code_t::WIDTH_NOT_PASSED;
+        case arg_status_t::INVALID:
+            return arg_error_code_t::WIDTH_INVALID;
+        default:
+            break;
+    }
+    
+    // --height -h
+    switch (args_t::parse_unsigned_argument(
+        argc, argv, "--height", "-h", &(this->height_status), &(this->height), consumed
+    )){
+        case arg_status_t::NOT_FOUND:
+            return arg_error_code_t::HEIGHT_NOT_PASSED;
+        case arg_status_t::INVALID:
+            return arg_error_code_t::WIDTH_INVALID;
+        default:
+            break;
+    }
+    
+    // --time-steps -t
+    switch (args_t::parse_unsigned_argument(
+        argc, argv, "--time-steps", "-t", &(this->time_steps_status), &(this->time_steps), consumed
+    )){
+        case arg_status_t::NOT_FOUND:
+            return arg_error_code_t::TIME_STEPS_NOT_PASSED;
+        case arg_status_t::INVALID:
+            return arg_error_code_t::TIME_STEPS_INVALID;
+        default:
+            break;
+    }
+    
+    // --base-filename -o
+    unsigned match = search_argv(argc, argv, "--base-filename", "-o");
+    if (match == UINT_MAX)
+    {
+        this->base_filename_status = arg_status_t::NOT_FOUND;
+        return arg_error_code_t::BASE_FILENAME_NOT_PASSED;
+    }
+    if (enable_consumption_tracking)
+        consumed[match] = true;
+    if (match + 1 >= argc)
+    {
+        this->base_filename_status = arg_status_t::INVALID;
+        return arg_error_code_t::BASE_FILENAME_INVALID;
+    }
+    if (enable_consumption_tracking)
+        consumed[match + 1] = true;
+    this->base_filename = argv[match + 1];
+    this->base_filename_status = arg_status_t::FOUND;
+        
+    // Sufficient arguments parsed successfully
+    return arg_error_code_t::SUCCESS;
+    
+}
+
+unsigned args_t::search_argv
 (
-    
-    /// [in] Number of elements in argv
     unsigned argc,
-    
-    /// [in] Array of tokenzied arguments passed to \ref main
-    char** argv,
-    
-    /// [in] Long version of a command line parameter (such as "--width").
-    // TODO Please change std::experimental::string_view to std::string_view
-    // when it's officially released.
+    char const* const* argv,
     std::experimental::string_view long_parameter,
-    
-    /// [in] Short version of a command line parameter (such as "-w").
-    // TODO Please change std::experimental::string_view to std::string_view
-    // when it's officially released.
     std::experimental::string_view short_parameter
-    
 ){
     
     for (unsigned ix = 0; ix < argc; ix++)
@@ -54,67 +137,40 @@ unsigned search_argv
     
 }
 
-const char* arg_error_t::enum_to_string(arg_error_code_t error_code_)
-{
+arg_status_t args_t::parse_unsigned_argument
+(
+    unsigned argc,
+    char const* const* argv,
+    std::experimental::string_view long_parameter,
+    std::experimental::string_view short_parameter,
+    arg_status_t* arg_status,
+    unsigned* parameter_value,
+    bool* consumed
+){
     
-    static const char* error_strings[unsigned(arg_error_code_t::NUM_ERROR_CODES)] = 
-    {
-        "Success",
-        "Requied command line parameter --width / -w was not passed.",
-        "Command line parameter --width / -w must be followed by an integer >= 0.",
-        "Command line parameter --width / -w was followed by an invalid number.",
-        "Requied command line parameter --height / -h was not passed.",
-        "Command line parameter --height / -h must be followed by an integer >= 0.",
-        "Command line parameter --height / -h was followed by an invalid number.",
-        "Requied command line parameter --time-steps / -t was not passed.",
-        "Command line parameter --time-steps / -t must be followed by an integer >= 0.",
-        "Command line parameter --time-steps / -t was followed by an invalid number.",
-        "Required command line parameter --base-filename / -o was not passed.",
-        "Command line parameter --base-filename / -o must be followed by a string."
-    };
+    bool enable_consumption_tracking = consumed != nullptr;
     
-    unsigned ix = unsigned(error_code_);
-    if (ix < unsigned(arg_error_code_t::NUM_ERROR_CODES))
-        return error_strings[ix];
-    else
-        return "";
-    
-}
-
-arg_error_t args_t::parse(unsigned argc, char** argv, bool* consumed)
-{
-    
-    // Mark all previous argument data as uninitialized
-    this->width_status = arg_status_t::NOT_FOUND;
-    this->height_status = arg_status_t::NOT_FOUND;
-    this->time_steps_status = arg_status_t::NOT_FOUND;
-    this->base_filename_status = arg_status_t::NOT_FOUND;
-    
-    bool enable_consumption_tracking = consumed != false;
-    if (enable_consumption_tracking)
-    {
-        for (unsigned ix = 0; ix < argc; ix++)
-            consumed[ix] = false;
-    }
-    
-    // Parse width argument
-    unsigned last_arg_ix = argc - 1;
-    unsigned match = search_argv(argc, argv, "--width", "-w");
+    // Find the first part of the command line argument,
+    // the part starting with -- or -
+    unsigned match = args_t::search_argv(argc, argv, long_parameter, short_parameter);
     if (match == UINT_MAX)
     {
-        // This is a required argument that wasn't found.  Abort.
-        this->width_status = arg_status_t::NOT_FOUND;
-        return arg_error_code_t::WIDTH_NOT_PASSED;
+        *arg_status = arg_status_t::NOT_FOUND;
+        return arg_status_t::NOT_FOUND;
     }
     if (enable_consumption_tracking)
         consumed[match] = true;
-    if (match == last_arg_ix)
+    
+    // Verify that there can be a value after the argument
+    if (match + 1 >= argc)
     {
-        this->width_status = arg_status_t::INVALID;
-        return arg_error_code_t::WIDTH_WITHOUT_ARGUMENT;
+        *arg_status = arg_status_t::INVALID;
+        return arg_status_t::INVALID;
     }
     if (enable_consumption_tracking)
         consumed[match + 1] = true;
+    
+    // Begin parsing the value after the command line switch
     signed converted;
     try
     {
@@ -122,101 +178,76 @@ arg_error_t args_t::parse(unsigned argc, char** argv, bool* consumed)
         // atoi causes undefined behavior if an invalid string is passed.
         converted = std::stoi(argv[match + 1]);
     } catch (std::exception error_code) {
-        this->width_status = arg_status_t::INVALID;
-        return arg_error_code_t::WIDTH_INVALID;
+        *arg_status = arg_status_t::INVALID;
+        return arg_status_t::INVALID;
     }
     if (converted < 0)
     {
-        this->width_status = arg_status_t::INVALID;
-        return arg_error_code_t::WIDTH_INVALID;
+        *arg_status = arg_status_t::INVALID;
+        return arg_status_t::INVALID;
     }
-    // Conversion successful
-    this->width = converted;
-    this->width_status = arg_status_t::FOUND;
     
-    // Parse height argument
-    match = search_argv(argc, argv, "--height", "-h");
+    // All argument validation checks passed.  Write back parameter value.
+    *parameter_value = unsigned(converted);
+    *arg_status = arg_status_t::FOUND;
+    return arg_status_t::FOUND;
+    
+}
+
+arg_status_t args_t::parse_float_argument
+(
+    unsigned argc,
+    char const* const* argv,
+    std::experimental::string_view long_parameter,
+    std::experimental::string_view short_parameter,
+    arg_status_t* arg_status,
+    float* parameter_value,
+    bool* consumed
+){
+    
+    bool enable_consumption_tracking = consumed != nullptr;
+    
+    // Find the first part of the command line argument,
+    // the part starting with -- or -
+    unsigned match = args_t::search_argv(argc, argv, long_parameter, short_parameter);
     if (match == UINT_MAX)
     {
-        this->height_status = arg_status_t::NOT_FOUND;
-        return arg_error_code_t::HEIGHT_NOT_PASSED;
+        *arg_status = arg_status_t::NOT_FOUND;
+        return arg_status_t::NOT_FOUND;
     }
     if (enable_consumption_tracking)
         consumed[match] = true;
-    if (match == last_arg_ix)
+    
+    // Verify that there can be a value after the argument
+    if (match + 1 >= argc)
     {
-        this->height_status = arg_status_t::INVALID;
-        return arg_error_code_t::HEIGHT_WITHOUT_ARGUMENT;
+        *arg_status = arg_status_t::INVALID;
+        return arg_status_t::INVALID;
     }
     if (enable_consumption_tracking)
         consumed[match + 1] = true;
+    
+    // Begin parsing the value after the command line switch
+    float converted;
     try
     {
-        converted = std::stoi(argv[match + 1]);
+        // Unfortunatly, we have to construct a string from argv[match] since
+        // atoi causes undefined behavior if an invalid string is passed.
+        converted = std::stof(argv[match + 1]);
     } catch (std::exception error_code) {
-        this->height_status = arg_status_t::INVALID;
-        return arg_error_code_t::HEIGHT_INVALID;
+        *arg_status = arg_status_t::INVALID;
+        return arg_status_t::INVALID;
     }
     if (converted < 0)
     {
-        this->height_status = arg_status_t::INVALID;
-        return arg_error_code_t::HEIGHT_INVALID;
+        *arg_status = arg_status_t::INVALID;
+        return arg_status_t::INVALID;
     }
-    this->height = converted;
-    this->height_status = arg_status_t::FOUND;
     
-    // Parse time-steps argument
-    match = search_argv(argc, argv, "--time-steps", "-t");
-    if (match == UINT_MAX)
-    {
-        this->time_steps_status = arg_status_t::NOT_FOUND;
-        return arg_error_code_t::TIME_STEPS_NOT_PASSED;
-    }
-    if (enable_consumption_tracking)
-        consumed[match] = true;
-    if (match == last_arg_ix)
-    {
-        this->time_steps_status = arg_status_t::INVALID;
-        return arg_error_code_t::TIME_STEPS_WITHOUT_ARGUMENT;
-    }
-    if (enable_consumption_tracking)
-        consumed[match + 1] = true;
-    try
-    {
-        converted = std::stoi(argv[match + 1]);
-    } catch (std::exception error_code) {
-        this->time_steps_status = arg_status_t::INVALID;
-        return arg_error_code_t::TIME_STEPS_INVALID;
-    }
-    if (converted < 0)
-    {
-        this->time_steps_status = arg_status_t::INVALID;
-        return arg_error_code_t::TIME_STEPS_INVALID;
-    }
-    this->time_steps = converted;
-    this->time_steps_status = arg_status_t::FOUND;
-    
-    // Parse base-filename argument
-    match = search_argv(argc, argv, "--base-filename", "-o");
-    if (match == UINT_MAX)
-    {
-        this->base_filename_status = arg_status_t::NOT_FOUND;
-        return arg_error_code_t::BASE_FILENAME_NOT_PASSED;
-    }
-    if (enable_consumption_tracking)
-        consumed[match] = true;
-    if (match == last_arg_ix)
-    {
-        this->base_filename_status = arg_status_t::INVALID;
-        return arg_error_code_t::BASE_FILENAME_WITHOUT_ARGUEMENT;
-    }
-    if (enable_consumption_tracking)
-        consumed[match + 1] = true;
-    this->base_filename = argv[match + 1];
-    this->base_filename_status = arg_status_t::FOUND;
-        
-    // Sufficient argumetns parsed successfully
-    return arg_error_code_t::SUCCESS;
+    // All argument validation checks passed.  Write back parameter value.
+    *parameter_value = converted;
+    *arg_status = arg_status_t::FOUND;
+    return arg_status_t::FOUND;
     
 }
 

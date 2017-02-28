@@ -3,18 +3,18 @@ EXENAME=power_map_generator
 COMPILEFLAGS=-Wall -Wextra -ansi -Wfatal-errors -std=c++1z
 LINKFLAGS=-Wall -Wextra -ansi -Wfatal-errors
 LIBS=-lpng
-ARGS=--width 256 --height 256 --time-steps 256 --base-filename power
+ARGS=--width 1 --height 2 --time-steps 3 --base-filename power
 
 all: documentation $(EXENAME)
 
-# add additional .o files on the line below (after main.o)
+# Add additional .o files on the line below (after main.o)
 $(EXENAME): args.o hotspot.o main.o generate_power_map.o png.o power_map_state.o main.o
 	$(COMPILER) $(LINKFLAGS) -o $(EXENAME) $^ $(LIBS)
 	@echo "*** COMPILE_SUCCESSFUL ***"
 
 #########################
 
-# add more .cpp -> .o compile commands here
+# Add more .cpp -> .o compile commands here
 
 args.o: args.cpp args.h
 	$(COMPILER) $(COMPILEFLAGS) -c -o $@ $<

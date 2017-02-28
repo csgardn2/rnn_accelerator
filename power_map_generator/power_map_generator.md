@@ -10,6 +10,3 @@ dumps heat maps into either txt or png files.
 
 The hotspot.cu benchmark in tensorflow/hotspot/gold_code has already been
 updated and power map generation has been integrated (but not tested).
-
-TODO - Add command line options for gaussian generation parameters then
-document some basic examples here.
