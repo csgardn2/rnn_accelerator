@@ -31,8 +31,22 @@ int main(int argc, char** argv)
     parsing_status_t parsing_status = args.parse(argc, argv, consumed);
     if (parsing_status != parsing_status_t::SUCCESS)
     {
-        std::cerr << "Error.  " << args_t::enum_to_string(parsing_status) << '\n';
         delete[] consumed;
+        std::cerr
+            << "Error.  " << args_t::enum_to_string(parsing_status) << '\n'
+            << "Options:\n"
+               "    --width -w\n"
+               "    --height -h\n"
+               "    --time-steps -t\n"
+               "    --base-png-filename -p\n"
+               "    --base-txt-filename -t\n"
+               "    --max-hotspots -h\n"
+               "    --min-peak-amplitude -a\n"
+               "    --max-peak-amplitude -A\n"
+               "    --min-stddev -s\n"
+               "    --max-stddev -S\n"
+               "    --min-aging-rate -r\n"
+               "    --max-aging-rate -R\n";
         return -1;
     }
     for (signed ix = 1; ix < argc; ix++)
