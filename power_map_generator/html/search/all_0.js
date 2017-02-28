@@ -4,7 +4,6 @@ var searchData=
   ['advance_5fage',['advance_age',['../classhotspot__t.html#af459a8554d04f469ea21e886fbc7125c',1,'hotspot_t']]],
   ['aging_5frate',['aging_rate',['../classhotspot__t.html#aa0c615aec9ea26d10b8d25e40abfb3af',1,'hotspot_t']]],
   ['amplitude',['amplitude',['../classhotspot__t.html#aa508408741bd3bfffda76a5c4e2a2e62',1,'hotspot_t']]],
-  ['arg_5ferror_5fcode_5ft',['arg_error_code_t',['../args_8h.html#a619a9e7c50949dfe2f22bac20d6904d9',1,'args.h']]],
   ['arg_5fstatus_5ft',['arg_status_t',['../args_8h.html#a940bc27b513d114e526a910ccfa5551e',1,'args.h']]],
   ['args_2ecpp',['args.cpp',['../args_8cpp.html',1,'']]],
   ['args_2eh',['args.h',['../args_8h.html',1,'']]],

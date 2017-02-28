@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['enum_5fto_5fstring',['enum_to_string',['../classparsing__status__t.html#ab4058dac831c546d54c35aae27033095',1,'parsing_status_t']]],
-  ['error_5fcode',['error_code',['../classparsing__status__t.html#adb9427c24dabbd7f7d06cfc8d9276f1c',1,'parsing_status_t']]],
-  ['error_5fstring',['error_string',['../classparsing__status__t.html#a5a2befa80961aa7b4180df0382ef8e87',1,'parsing_status_t']]]
+  ['found',['FOUND',['../args_8h.html#a940bc27b513d114e526a910ccfa5551ea3e918e9c9f594bda6b0cf358391c3b1a',1,'args.h']]]
 ];

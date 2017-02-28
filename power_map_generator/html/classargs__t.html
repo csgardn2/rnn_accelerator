@@ -84,6 +84,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="classargs__t-members.html">List of all members</a>  </div>
@@ -107,9 +108,15 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classargs__t.html#ad2bc4a0bc21ac43c13c15fc06a4dabd0">args_t</a> (unsigned argc, char const *const *argv, bool *consumed=nullptr)</td></tr>
 <tr class="memdesc:ad2bc4a0bc21ac43c13c15fc06a4dabd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a>. <br /></td></tr>
 <tr class="separator:ad2bc4a0bc21ac43c13c15fc06a4dabd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a308f88cf681ab533b1f97d5a5a283f42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classparsing__status__t.html">parsing_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a> (unsigned argc, char const *const *argv, bool *consumed=nullptr)</td></tr>
+<tr class="memitem:a308f88cf681ab533b1f97d5a5a283f42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="args_8h.html#abc80526a5f8bde6dd7968e0bfed26226">parsing_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a> (unsigned argc, char const *const *argv, bool *consumed=nullptr)</td></tr>
 <tr class="memdesc:a308f88cf681ab533b1f97d5a5a283f42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse the command line parameters passed to <a class="el" href="main_8cpp.html#a6f2c4b4455a425e997622c2ecf54afa4">main</a> and initialize all relevant <a class="el" href="classargs__t.html" title="When the command line parameters to main are parsed, they are collected here for easy access...">args_t</a> variables if the corresponding parameter is passed.  <a href="#a308f88cf681ab533b1f97d5a5a283f42">More...</a><br /></td></tr>
 <tr class="separator:a308f88cf681ab533b1f97d5a5a283f42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a4a3f446b2810149ff8a91311eea45149"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4a3f446b2810149ff8a91311eea45149"></a>
+static const char *&#160;</td><td class="memItemRight" valign="bottom"><b>enum_to_string</b> (<a class="el" href="args_8h.html#abc80526a5f8bde6dd7968e0bfed26226">parsing_status_t</a> parsing_status)</td></tr>
+<tr class="separator:a4a3f446b2810149ff8a91311eea45149"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -174,7 +181,7 @@ Static Protected Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classparsing__status__t.html">parsing_status_t</a> args_t::parse </td>
+          <td class="memname"><a class="el" href="args_8h.html#abc80526a5f8bde6dd7968e0bfed26226">parsing_status_t</a> args_t::parse </td>
           <td>(</td>
           <td class="paramtype">unsigned&#160;</td>
           <td class="paramname"><em>argc</em>, </td>
@@ -200,7 +207,7 @@ Static Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Parse the command line parameters passed to <a class="el" href="main_8cpp.html#a6f2c4b4455a425e997622c2ecf54afa4">main</a> and initialize all relevant <a class="el" href="classargs__t.html" title="When the command line parameters to main are parsed, they are collected here for easy access...">args_t</a> variables if the corresponding parameter is passed. </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="args_8h.html#a619a9e7c50949dfe2f22bac20d6904d9">SUCCESS</a> if sufficient parameters were successfully parsed or defaulted to execute the rest of the program. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>SUCCESS if sufficient parameters were successfully parsed or defaulted to execute the rest of the program. </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">argc</td><td>The same as argc from <a class="el" href="main_8cpp.html#a6f2c4b4455a425e997622c2ecf54afa4">main</a>. The number of elements in the argv array and the optional consumed array. </td></tr>
@@ -434,7 +441,7 @@ Static Protected Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Feb 28 2017 10:33:24 for Power Map Generator by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 28 2017 10:42:23 for Power Map Generator by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>

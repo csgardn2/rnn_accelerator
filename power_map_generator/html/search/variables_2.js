@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['error_5fcode',['error_code',['../classparsing__status__t.html#adb9427c24dabbd7f7d06cfc8d9276f1c',1,'parsing_status_t']]],
-  ['error_5fstring',['error_string',['../classparsing__status__t.html#a5a2befa80961aa7b4180df0382ef8e87',1,'parsing_status_t']]]
+  ['generator',['generator',['../classpower__map__state__t.html#aeff56b3f18eb7c69c3e71b2fd88a643b',1,'power_map_state_t']]],
+  ['green',['green',['../classpng__t.html#ad241c25ab1ac1554ed1b971156bd4c44',1,'png_t']]],
+  ['greyscale',['greyscale',['../classpng__t.html#acdb00f810918a6d984f44df0ba730c3c',1,'png_t']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['write_5fto_5ffile',['write_to_file',['../classpng__t.html#a5e5a883031f51a7a9241bc2ae29d1255',1,'png_t']]]
+  ['_7epng_5ft',['~png_t',['../classpng__t.html#ab285fe3412a500bf4e94a2c8ddf7ee52',1,'png_t']]]
 ];

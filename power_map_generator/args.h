@@ -40,7 +40,7 @@ enum class arg_status_t : unsigned char
 
 /// \brief Integral tag for an error which could occur within \ref args_t::parse
 /// "parse" for easy comparison.
-enum class arg_error_code_t : unsigned char
+enum class parsing_status_t : unsigned char
 {
     
     SUCCESS,
@@ -56,67 +56,6 @@ enum class arg_error_code_t : unsigned char
     /// \brief This element MUST be the last enum.
     NUM_ERROR_CODES
     
-};
-
-/// \brief Class which contains both an \ref arg_error_code_t "error code" and a
-/// human readable message describing that error code.  This class is designed
-/// to be the return value of \ref args_t::parse "parse"
-class parsing_status_t
-{
-    
-    public:
-        
-        /// \brief Default constructor
-        inline parsing_status_t() = default;
-        
-        /// \brief Copy constructor
-        inline parsing_status_t(const parsing_status_t& rhs) = default;
-        
-        /// \brief Initialization constructor.
-        inline parsing_status_t(arg_error_code_t error_code_)
-        {
-            if (unsigned(error_code_) < unsigned(arg_error_code_t::NUM_ERROR_CODES))
-            {
-                this->error_code = error_code_;
-                this->error_string = parsing_status_t::enum_to_string(error_code_);
-            }
-        }
-        
-        /// \brief Returns true if the two \ref error_code "error codes" of the two
-        /// objects match, ignoring the \ref error_string "error strings".
-        inline bool operator==(const parsing_status_t& rhs)
-        {
-            return this->error_code == rhs.error_code;
-        }
-        
-        /// \brief Returns true if the error code of this object matches the given
-        /// error code.
-        inline bool operator==(arg_error_code_t rhs)
-        {
-            return this->error_code == rhs;
-        }
-        
-        /// \brief See \ref parsing_status_t::operator==(const parsing_status_t&)
-        inline bool operator!=(const parsing_status_t& rhs)
-        {
-            return !(*this == rhs);
-        }
-        
-        /// \brief See \ref parsing_status_t::operator==(arg_error_code_t)
-        inline bool operator!=(arg_error_code_t rhs)
-        {
-            return !(*this == rhs);
-        }
-        
-        /// \brief Return a human readable string corresponding to an error code.
-        static const char* enum_to_string(arg_error_code_t error_code_);
-        
-        /// \brief See arg_error_code_t.
-        arg_error_code_t error_code;
-        
-        /// \brief A human readable message explaining why this error occurred.
-        const char* error_string;
-        
 };
 
 /// \brief When the command line parameters to \ref main are parsed, they are
@@ -169,6 +108,8 @@ class args_t
             bool* consumed = nullptr
             
         );
+        
+        static const char* enum_to_string(parsing_status_t parsing_status);
         
         /// \brief Required.\n
         /// Usage: --width -w [integer >= 0]\n

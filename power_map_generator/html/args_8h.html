@@ -96,9 +96,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparsing__status__t.html">parsing_status_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class which contains both an <a class="el" href="args_8h.html#a619a9e7c50949dfe2f22bac20d6904d9">error code</a> and a human readable message describing that error code. This class is designed to be the return value of <a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a>.  <a href="classparsing__status__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classargs__t.html">args_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">When the command line parameters to <a class="el" href="main_8cpp.html#a6f2c4b4455a425e997622c2ecf54afa4">main</a> are parsed, they are collected here for easy access.  <a href="classargs__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -112,7 +109,7 @@ Enumerations</h2></td></tr>
  }<tr class="memdesc:a940bc27b513d114e526a910ccfa5551e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to indicate weather an parameter was passed via the command line or not.  <a href="args_8h.html#a940bc27b513d114e526a910ccfa5551e">More...</a><br /></td></tr>
 </td></tr>
 <tr class="separator:a940bc27b513d114e526a910ccfa5551e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a619a9e7c50949dfe2f22bac20d6904d9"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="args_8h.html#a619a9e7c50949dfe2f22bac20d6904d9">arg_error_code_t</a> : unsigned char { <br />
+<tr class="memitem:abc80526a5f8bde6dd7968e0bfed26226"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="args_8h.html#abc80526a5f8bde6dd7968e0bfed26226">parsing_status_t</a> : unsigned char { <br />
 &#160;&#160;<b>SUCCESS</b>, 
 <b>WIDTH_NOT_PASSED</b>, 
 <b>WIDTH_INVALID</b>, 
@@ -124,11 +121,11 @@ Enumerations</h2></td></tr>
 <b>BASE_FILENAME_NOT_PASSED</b>, 
 <br />
 &#160;&#160;<b>BASE_FILENAME_INVALID</b>, 
-<a class="el" href="args_8h.html#a619a9e7c50949dfe2f22bac20d6904d9aeffc1c111d98de750717135b2458bb55">arg_error_code_t::NUM_ERROR_CODES</a>
+<a class="el" href="args_8h.html#abc80526a5f8bde6dd7968e0bfed26226aeffc1c111d98de750717135b2458bb55">parsing_status_t::NUM_ERROR_CODES</a>
 <br />
- }<tr class="memdesc:a619a9e7c50949dfe2f22bac20d6904d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integral tag for an error which could occur within <a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a> for easy comparison.  <a href="args_8h.html#a619a9e7c50949dfe2f22bac20d6904d9">More...</a><br /></td></tr>
+ }<tr class="memdesc:abc80526a5f8bde6dd7968e0bfed26226"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integral tag for an error which could occur within <a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a> for easy comparison.  <a href="args_8h.html#abc80526a5f8bde6dd7968e0bfed26226">More...</a><br /></td></tr>
 </td></tr>
-<tr class="separator:a619a9e7c50949dfe2f22bac20d6904d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:abc80526a5f8bde6dd7968e0bfed26226"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>File Name: <a class="el" href="args_8h.html">args.h</a> <br />
@@ -140,33 +137,6 @@ Target OS: Ubuntu Linux 16.04 <br />
 Target architecture: x86 64-bit <br />
  </p>
 </div><h2 class="groupheader">Enumeration Type Documentation</h2>
-<a class="anchor" id="a619a9e7c50949dfe2f22bac20d6904d9"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="args_8h.html#a619a9e7c50949dfe2f22bac20d6904d9">arg_error_code_t</a> : unsigned char</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Integral tag for an error which could occur within <a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a> for easy comparison. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="a619a9e7c50949dfe2f22bac20d6904d9aeffc1c111d98de750717135b2458bb55"></a>NUM_ERROR_CODES&#160;</td><td class="fielddoc">
-<p>This element MUST be the last enum. </p>
-</td></tr>
-</table>
-
-</div>
-</div>
 <a class="anchor" id="a940bc27b513d114e526a910ccfa5551e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -203,10 +173,37 @@ Target architecture: x86 64-bit <br />
 
 </div>
 </div>
+<a class="anchor" id="abc80526a5f8bde6dd7968e0bfed26226"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="args_8h.html#abc80526a5f8bde6dd7968e0bfed26226">parsing_status_t</a> : unsigned char</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Integral tag for an error which could occur within <a class="el" href="classargs__t.html#a308f88cf681ab533b1f97d5a5a283f42">parse</a> for easy comparison. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="abc80526a5f8bde6dd7968e0bfed26226aeffc1c111d98de750717135b2458bb55"></a>NUM_ERROR_CODES&#160;</td><td class="fielddoc">
+<p>This element MUST be the last enum. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Feb 28 2017 10:33:24 for Power Map Generator by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 28 2017 10:42:23 for Power Map Generator by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>

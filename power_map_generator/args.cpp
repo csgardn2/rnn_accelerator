@@ -16,10 +16,10 @@
 
 #include "args.h"
 
-const char* parsing_status_t::enum_to_string(arg_error_code_t error_code_)
+const char* args_t::enum_to_string(parsing_status_t parsing_status)
 {
     
-    static const char* error_strings[unsigned(arg_error_code_t::NUM_ERROR_CODES)] = 
+    static const char* error_strings[unsigned(parsing_status_t::NUM_ERROR_CODES)] = 
     {
         "Success",
         "Requied command line parameter --width / -w was not passed.",
@@ -32,8 +32,8 @@ const char* parsing_status_t::enum_to_string(arg_error_code_t error_code_)
         "Command line parameter --base-filename / -o must be followed by a string.",
     };
     
-    unsigned ix = unsigned(error_code_);
-    if (ix < unsigned(arg_error_code_t::NUM_ERROR_CODES))
+    unsigned ix = unsigned(parsing_status);
+    if (ix < unsigned(parsing_status_t::NUM_ERROR_CODES))
         return error_strings[ix];
     else
         return "";
@@ -61,9 +61,9 @@ parsing_status_t args_t::parse(unsigned argc, char const* const* argv, bool* con
         argc, argv, "--width", "-w", &(this->width_status), &(this->width), consumed
     )){
         case arg_status_t::NOT_FOUND:
-            return arg_error_code_t::WIDTH_NOT_PASSED;
+            return parsing_status_t::WIDTH_NOT_PASSED;
         case arg_status_t::INVALID:
-            return arg_error_code_t::WIDTH_INVALID;
+            return parsing_status_t::WIDTH_INVALID;
         default:
             break;
     }
@@ -73,9 +73,9 @@ parsing_status_t args_t::parse(unsigned argc, char const* const* argv, bool* con
         argc, argv, "--height", "-h", &(this->height_status), &(this->height), consumed
     )){
         case arg_status_t::NOT_FOUND:
-            return arg_error_code_t::HEIGHT_NOT_PASSED;
+            return parsing_status_t::HEIGHT_NOT_PASSED;
         case arg_status_t::INVALID:
-            return arg_error_code_t::WIDTH_INVALID;
+            return parsing_status_t::WIDTH_INVALID;
         default:
             break;
     }
@@ -85,9 +85,9 @@ parsing_status_t args_t::parse(unsigned argc, char const* const* argv, bool* con
         argc, argv, "--time-steps", "-t", &(this->time_steps_status), &(this->time_steps), consumed
     )){
         case arg_status_t::NOT_FOUND:
-            return arg_error_code_t::TIME_STEPS_NOT_PASSED;
+            return parsing_status_t::TIME_STEPS_NOT_PASSED;
         case arg_status_t::INVALID:
-            return arg_error_code_t::TIME_STEPS_INVALID;
+            return parsing_status_t::TIME_STEPS_INVALID;
         default:
             break;
     }
@@ -97,14 +97,14 @@ parsing_status_t args_t::parse(unsigned argc, char const* const* argv, bool* con
     if (match == UINT_MAX)
     {
         this->base_filename_status = arg_status_t::NOT_FOUND;
-        return arg_error_code_t::BASE_FILENAME_NOT_PASSED;
+        return parsing_status_t::BASE_FILENAME_NOT_PASSED;
     }
     if (enable_consumption_tracking)
         consumed[match] = true;
     if (match + 1 >= argc)
     {
         this->base_filename_status = arg_status_t::INVALID;
-        return arg_error_code_t::BASE_FILENAME_INVALID;
+        return parsing_status_t::BASE_FILENAME_INVALID;
     }
     if (enable_consumption_tracking)
         consumed[match + 1] = true;
@@ -112,7 +112,7 @@ parsing_status_t args_t::parse(unsigned argc, char const* const* argv, bool* con
     this->base_filename_status = arg_status_t::FOUND;
         
     // Sufficient arguments parsed successfully
-    return arg_error_code_t::SUCCESS;
+    return parsing_status_t::SUCCESS;
     
 }
 

@@ -24,10 +24,10 @@ int main(int argc, char** argv)
 {
     
     args_t args;
-    parsing_status_t argument_parsing_status = args.parse(argc, argv);
-    if (argument_parsing_status != arg_error_code_t::SUCCESS)
+    parsing_status_t parsing_status = args.parse(argc, argv);
+    if (parsing_status != parsing_status_t::SUCCESS)
     {
-        std::cerr << argument_parsing_status.error_string << "\"\n";
+        std::cerr << args_t::enum_to_string(parsing_status) << "\"\n";
         return -1;
     }
     
