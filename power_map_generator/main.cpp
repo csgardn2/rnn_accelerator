@@ -8,6 +8,7 @@
 /// Target architecture:            x86 64-bit \n */
 /// See html/index.html for documentation.
 
+#include <fstream>
 #include <iostream>
 #include <random>
 #include <string>
@@ -23,6 +24,7 @@
 int main(int argc, char** argv)
 {
     
+    // Parse command line arguments
     bool* consumed = new bool[argc];
     args_t args;
     parsing_status_t parsing_status = args.parse(argc, argv, consumed);
@@ -39,22 +41,7 @@ int main(int argc, char** argv)
     }
     delete[] consumed;
     
-    std::cout
-        << "width = " << args.width << '\n'
-        << "height = " << args.height << '\n'
-        << "time_steps = " << args.time_steps << '\n'
-        << "base_png_filename = \"" << args.base_png_filename << "\"\n"
-        << "base_txt_filename = \"" << args.base_txt_filename << "\"\n"
-        << "max_hotspots = " << args.max_hotspots << '\n'
-        << "min_peak_amplitude = " << args.min_peak_amplitude << '\n'
-        << "max_peak_amplitude = " << args.max_peak_amplitude << '\n'
-        << "min_stddev = " << args.min_stddev << '\n'
-        << "max_stddev = " << args.max_stddev << '\n'
-        << "min_aging_rate = " << args.min_aging_rate << '\n'
-        << "max_aging_rate = " << args.max_aging_rate << '\n';
-    
-    return 0;
-    
+    // Initialize a grid which will develop hot patches as time progresses
     power_map_state_t power_map_state
     (
         args.width,
@@ -67,41 +54,83 @@ int main(int argc, char** argv)
         args.min_aging_rate,
         args.max_aging_rate
     );
-    
-    png_t encoder(true, args.width, args.height);
-    
     unsigned flat_size = args.width * args.height;
     float* power_map = new float[flat_size];
     
-//    unsigned char* color_out = encoder.get_grey();
+    // Initialize a PNG writter
+    png_t png_encoder(true, args.width, args.height);
+    unsigned char* color_out = png_encoder.get_grey();
+    
+    // Compute each iteration of the power map, and dump to the requested files
+    bool enable_png_write = args.base_png_filename_status == arg_status_t::FOUND;
+    bool enable_txt_write = args.base_txt_filename_status == arg_status_t::FOUND;
     std::string filename;
+    unsigned previous_progress = 0;
     for (unsigned iy = 0, bound = args.time_steps; iy < bound; iy++)
     {
         
-        // Compute the power map
+        // Compute the next iteration of the power map.
+        // This will only cause a slight change from the previous power map.
         generate_power_map(&power_map_state, power_map);
         
-        // Dump a CSV of the power map
-        
-        
-        // Dump a PNG from the power map
-        /*
-        for (unsigned ix = 0; ix < flat_size; ix++)
+        // Dump a PNG from the power map if requested
+        if (enable_png_write)
         {
-            signed cur_color = signed(power_map[ix]);
-            if (cur_color < 0)
-                cur_color = 0;
-            if (cur_color > 255)
-                cur_color = 255;
-            color_out[ix] = cur_color;
+            
+            for (unsigned ix = 0; ix < flat_size; ix++)
+            {
+                signed cur_color = signed(power_map[ix]);
+                if (cur_color < 0)
+                    cur_color = 0;
+                if (cur_color > 255)
+                    cur_color = 255;
+                color_out[ix] = cur_color;
+            }
+            
+            filename = args.base_png_filename;
+            filename += std::to_string(iy);
+            filename += ".png";
+            
+            png_encoder.write_to_file(filename.c_str());
         }
-        filename = args.base_filename;
-        filename += std::to_string(iy);
-        filename += ".png";
-        encoder.write_to_file(filename.c_str());
-        */
+        
+        // Dump a TXT of the power map if requested
+        if (enable_txt_write)
+        {
+            
+            filename = args.base_txt_filename;
+            filename += std::to_string(iy);
+            filename += ".txt";
+            
+            std::ofstream txt_encoder(filename);
+            
+            txt_encoder << flat_size << '\n';
+            
+            for (unsigned ix = 0; ix < flat_size; ix++)
+                txt_encoder << power_map[ix] << '\n';
+            
+        }
+        
+        // Print progress indicator
+        unsigned progress = iy * 64 / bound;
+        if (progress > previous_progress)
+        {
+            for (unsigned ix = 0; ix < progress; ix++)
+                std::cout << '#';
+            for (unsigned ix = progress; ix < 63; ix++)
+                std::cout << '-';
+            std::cout
+                << "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
+                   "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
+                   "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
+                   "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r";
+            std::cout << std::flush;
+            previous_progress = progress;
+        }
         
     }
+    
+    std::cout << '\n';
     
     delete[] power_map;
     
