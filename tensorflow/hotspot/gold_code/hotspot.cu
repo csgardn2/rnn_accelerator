@@ -1,10 +1,10 @@
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
+#include <fstream>
 #include <string>
 #include <time.h>
 #include <assert.h>
-
-#include "generate_power_map.h"
 
 #ifdef RD_WG_SIZE_0_0                                                            
     #define BLOCK_SIZE RD_WG_SIZE_0_0                                        
@@ -289,24 +289,7 @@ int compute_tran_temp
     int src = 1;
     int dst = 0;
     
-    // Added this to generate randomly changing power maps.  Since we want each
-    // power map to be very similar to that of the previous iteration, we need
-    // to keep track of some state information from the previous state.
-    power_map_state_t power_map_state
-    (
-        col,                // Width
-        row,                // Height
-        1024,               // Max hotspots
-        10.0f,              // Min peak amplitude
-        50.0f,              // Max peak amplitude
-        5.0f,               // Min stdev
-        15.0f,              // Max stddev
-        5.0f,               // Min aging rate
-        20.0f               // Max aging rate
-    );
-    
-    std::string source_filename;
-    std::string destination_filename;
+    std::string filename;
     char iteration_str[64];
     char width_str[64];
     char height_str[64];
@@ -323,8 +306,39 @@ int compute_tran_temp
         src = dst;
         dst = temp;
         
-        generate_power_map(&power_map_state, host_power);
-        cudaMemcpy(MatrixPower, host_power, linear_size * sizeof(float), cudaMemcpyHostToDevice);
+        snprintf(iteration_str, 64, "%04u", t);
+        
+        // generate_power_map(&power_map_state, host_power);
+        filename =
+            "../../../heat_maps/simulation_runs/256x256_full_dynamicpower_iterations0000to0255/"
+            "power_256x256_full_dynamicpower_iteration";
+        filename += iteration_str;
+        filename += ".csv";
+        std::ifstream power_file(filename);
+        unsigned power_size;
+        power_file >> power_size;
+        if (power_size == linear_size)
+        {
+            for (unsigned ix = 0; ix < linear_size; ix++)
+                power_file >> host_power[ix];
+            cudaMemcpy(MatrixPower, host_power, linear_size * sizeof(float), cudaMemcpyHostToDevice);
+        } else {
+            std::cout
+                << "Error.  File \""
+                << filename
+                << "\" contains "
+                << power_size
+                << " elements but should contain "
+                << linear_size
+                << "\n.";
+        }
+        
+        // Added this code to generate dump.  Remove if you don't need it.
+        cudaMemcpy(host_src, MatrixTemp[src], linear_size * sizeof(float), cudaMemcpyDeviceToHost);
+        filename = "/home/poopslayer78/Scaffold/temperature_256x256_full_dynamicpower_";
+        filename += iteration_str;
+        filename += ".csv";
+        dump_full_csv_training_data(host_src, col, row, filename);
         
         calculate_temp
             <<<dimGrid, dimBlock>>>
@@ -344,18 +358,6 @@ int compute_tran_temp
                 step,
                 time_elapsed
             );
-        
-        // Added this code to generate dump.  Remove if you don't need it.
-        cudaMemcpy(host_src, MatrixTemp[src], linear_size * sizeof(float), cudaMemcpyDeviceToHost);
-        snprintf(iteration_str, 64, "%05u", t);
-        source_filename = "./simulation_output_temperatures/256x256_full_random_iterations00000to65535/source_";
-        source_filename += width_str;
-        source_filename += 'x';
-        source_filename += height_str;
-        source_filename += "_full_random_iteration";
-        source_filename += iteration_str;
-        source_filename += ".csv";
-        // dump_full_csv_training_data(host_src, col, row, source_filename);
         
     }
     
