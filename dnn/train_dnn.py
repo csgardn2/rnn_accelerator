@@ -13,10 +13,11 @@ import hotspot.hotspot as bm # TODO
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
-flags.DEFINE_float('learning_rate', 0.01, 'learning rate')
+flags.DEFINE_float('learning_rate', 0.0001, 'learning rate')
 flags.DEFINE_integer('batch_size', 100, 'batch size')
+flags.DEFINE_integer('max_steps', 9100, 'max training steps')
 flags.DEFINE_integer('hidden1',
-        32, 'number of neurons in hidden layer 1')
+        0, 'number of neurons in hidden layer 1')
 flags.DEFINE_integer('hidden2',
         0, 'number of layers in hidden layer 2')
 flags.DEFINE_string('data_dir',
@@ -29,6 +30,12 @@ flags.DEFINE_bool('separate_file',
         False, 'indicates whether training, validation, testing data are in separate files')
 flags.DEFINE_string('log_dir',
         '/home/cosine/research/rnn_accelerator/dnn/hotspot/log', 'directory to put the log data')
+#for hotspot training
+flags.DEFINE_string('tile_size',
+        1, 'tile size')
+flags.DEFINE_string('num_maps',
+        2, 'number of maps used')
+
 
 def run_training():
     '''train the Neural Network'''
@@ -38,8 +45,16 @@ def run_training():
     assert(FLAGS.output_data_type == 'float'
             or FLAGS.output_data_type == 'int')
     # import the dataset
-    data_sets = dataset.Datasets(FLAGS.data_dir, FLAGS.separate_file,
+    '''
+    data_sets = dataset.Datasets(FLAGS.data_dir,
+            FLAGS.separate_file,
             FLAGS.input_data_type, FLAGS.output_data_type)
+    '''
+    #for hotspot training
+    data_sets = dataset.Datasets(FLAGS.data_dir,
+            FLAGS.separate_file,
+            FLAGS.input_data_type, FLAGS.output_data_type,
+            FLAGS.tile_size, FLAGS.num_maps)
 
     with tf.Graph().as_default():
         # placeholder
@@ -92,8 +107,8 @@ def run_training():
         sess.run(init)
 
         # start training
-        _, max_steps = data_sets.train.max_steps(FLAGS.batch_size)
-        for step in xrange(max_steps):
+        #_, max_steps = data_sets.train.max_steps(FLAGS.batch_size)
+        for step in xrange(FLAGS.max_steps):
             feed_dict = util.fill_feed_dict(data_sets.train,
                     input_pl, golden_pl,
                     FLAGS.batch_size)

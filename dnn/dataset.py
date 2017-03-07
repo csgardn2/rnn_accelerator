@@ -25,9 +25,11 @@ class Dataset:
             in_frac: the untouched fraction of input data with size batch_size
             gold_frac: the untouched fraction of output golden data with size batch_size
         '''
-        in_frac = self.input_data[self.num_touched:self.num_touched+batch_size]
-        gold_frac = self.golden_data[self.num_touched:self.num_touched+batch_size]
         self.num_touched += batch_size
+        if self.num_touched >= len(self.input_data):
+            self.num_touched = batch_size
+        in_frac = self.input_data[self.num_touched-batch_size:self.num_touched]
+        gold_frac = self.golden_data[self.num_touched-batch_size:self.num_touched]
         #debug
         #print self.num_touched
         return in_frac, gold_frac
@@ -72,13 +74,16 @@ class Datasets:
 #    validate
 #    test
 
-    def __init__(self, data_dir, separate, type_input, type_golden):
+    def __init__(self, data_dir, separate, type_input, type_golden, tile_size, num_maps):
         '''initialize training, validation, and testing data
         Args:
             data_dir: directory of data
             separate: indicates whether the data are already separated into training, validation, and testing
             type_in: type of input data
             type_gold: type of golden data
+            #for training hotspot (loading data file)
+            tile_size: tile size
+            num_maps: number of maps
         '''
         if type_input == 'float':
             type_in = float
@@ -89,22 +94,27 @@ class Datasets:
         else:
             type_gold = int
 
+        #for training hotspot
+        tile_size_str = str(tile_size)
+        num_maps_str = str(num_maps)
 
         if not separate:
             # import input file
-            inFile = open(data_dir + 'input.txt')
+            inFile = open(data_dir+"input_"+tile_size_str+"x"+tile_size_str+"_"+num_maps_str+"maps.txt")
             num_in = int(inFile.readline())
-            input_data = [ [type_in(i) for i in inputs.split(', ')]
+            input_data = [ [type_in(i) for i in inputs.strip().split(' ')]
                     for inputs in inFile.readlines() ]
             self.num_in_neuron = len(input_data[0])
+            #debug
+            print len(input_data)
             assert(num_in == len(input_data))
             #debug
             #print "num_in"
             #print num_in
             # import golden file
-            goldFile = open(data_dir + 'golden.txt')
+            goldFile = open(data_dir+"golden_"+tile_size_str+"x"+tile_size_str+"_"+num_maps_str+"maps.txt")
             num_gold = int(goldFile.readline())
-            golden_data = [ [type_gold(i) for i in goldens.split(', ')]
+            golden_data = [ [type_gold(i) for i in goldens.strip().split(' ')]
                     for goldens in goldFile.readlines() ]
             self.num_out_neuron = len(golden_data[0])
             assert(num_gold == len(golden_data))
@@ -132,14 +142,14 @@ class Datasets:
             # import input file
             train_inFile = open(data_dir + 'train_input.txt')
             num_train_in = int(train_inFile.readline())
-            train_in_data = [ [type_in(i) for i in inputs.split(', ') ]
+            train_in_data = [ [type_in(i) for i in inputs.strip().split(' ') ]
                     for inputs in train_inFile.readlines() ]
             self.num_in_neuron = len(train_in_data[0])
             assert(num_train_in == len(train_in_data))
             # import golden file
             train_goldFile = open(data_dir + 'train_golden.txt')
             num_train_gold = int(train_goldFile.readline())
-            train_gold_data = [ [type_gold(i) for i in goldens.split(', ')]
+            train_gold_data = [ [type_gold(i) for i in goldens.strip().split(' ')]
                     for goldens in train_goldFile.readlines() ]
             self.num_out_neuron = len(train_gold_data[0])
             assert(num_train_gold == len(train_gold_data))
@@ -156,14 +166,14 @@ class Datasets:
             # import input file
             validate_inFile = open(data_dir + 'validate_input.txt')
             num_validate_in = int(validate_inFile.readline())
-            validate_in_data = [ [type_in(i) for i in inputs.split(', ') ]
+            validate_in_data = [ [type_in(i) for i in inputs.strip().split(' ') ]
                     for inputs in validate_inFile.readlines() ]
             assert(self.num_in_neuron == len(validate_in_data[0]))
             assert(num_validate_in == len(validate_in_data))
             # import golden file
             validate_goldFile = open(data_dir + 'validate_golden.txt')
             num_validate_gold = int(validate_goldFile.readline())
-            validate_gold_data = [ [type_gold(i) for i in goldens.split(', ')]
+            validate_gold_data = [ [type_gold(i) for i in goldens.strip().split(' ')]
                     for goldens in validate_goldFile.readlines() ]
             assert(self.num_out_neuron == len(validate_gold_data[0]))
             assert(num_validate_gold == len(validate_gold_data))
@@ -175,14 +185,14 @@ class Datasets:
             # import input file
             test_inFile = open(data_dir + 'test_input.txt')
             num_test_in = int(test_inFile.readline())
-            test_in_data = [ [type_in(i) for i in inputs.split(', ') ]
+            test_in_data = [ [type_in(i) for i in inputs.strip().split(' ') ]
                     for inputs in test_inFile.readlines() ]
             assert(self.num_in_neuron == len(test_in_data[0]))
             assert(num_test_in == len(test_in_data))
             # import golden file
             test_goldFile = open(data_dir + 'test_golden.txt')
             num_test_gold = int(test_goldFile.readline())
-            test_gold_data = [ [type_gold(i) for i in goldens.split(', ')]
+            test_gold_data = [ [type_gold(i) for i in goldens.strip().split(' ')]
                     for goldens in test_goldFile.readlines() ]
             assert(self.num_out_neuron == len(test_gold_data[0]))
             assert(num_test_gold == len(test_gold_data))

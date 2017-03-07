@@ -107,7 +107,10 @@ def do_eval(sess, error,
         feed_dict = fill_feed_dict(data_set,
                 input_pl, golden_pl,
                 batch_size)
-        error_sum = error_sum + sess.run(error, feed_dict=feed_dict)
+        error_sess = sess.run(error, feed_dict=feed_dict)
+        #debug
+        #print "error = %f" %error_sess
+        error_sum = error_sum + error_sess
     accuracy = 100 - 100 * float(error_sum) / float(num_examples)
     print('Number of examples: %d, Accuracy: %.3f'
             % (num_examples, accuracy))

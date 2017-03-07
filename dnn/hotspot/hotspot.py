@@ -21,6 +21,7 @@ def loss(outputs, goldens):
         loss: loss tensor of type float
     '''
     return tf.reduce_mean(tf.abs(tf.sub(outputs, goldens)))
+    #return tf.reduce_mean(tf.square(tf.sub(outputs, goldens)))
 
 def training(loss, learning_rate):
     '''sets up the traing ops
@@ -38,7 +39,7 @@ def training(loss, learning_rate):
     # summarizer, not necessary
     tf.summary.scalar('loss', loss)
     # TODO: optimizer can be modified
-    optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+    optimizer = tf.train.AdagradOptimizer(learning_rate)
     # op
     train_op = optimizer.minimize(loss)
     return train_op
@@ -53,4 +54,5 @@ def error(outputs, goldens):
     Returns:
         error: the sum of error in one batch of data
     '''
-    return tf.reduce_sum(tf.div(tf.abs(tf.sub(outputs, goldens)), goldens))
+    return tf.reduce_sum(tf.abs(tf.div(tf.sub(outputs, goldens), goldens)))
+    #return tf.reduce_sum(tf.square(tf.div(tf.sub(outputs, goldens), goldens)))
