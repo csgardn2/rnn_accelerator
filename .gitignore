@@ -21,7 +21,7 @@ heat_maps/simulation_runs/256x256_full_dynamicpower_iterations0000to0255/256x256
 dnn/data
 dnn/log
 dnn/fft
-	
+
 # Executable/Binary compiler outputs
 heat_visualizer/*.o
 heat_visualizer/heat_visualizer
@@ -38,6 +38,9 @@ tensorflow/hotspot/gold_code/hotspot
 tensorflow/rnn_basic/gold_code/*.o
 tensorflow/rnn_basic/gold_code/training_data_generator
 tensorflow/mnist/neural_code/*.o
+
+# Python junk
+tensorflow/hotspot/rnn_neural_code/__pycache__
 
 # Other junk
 tensorflow/hotspot/gold_code/output.txt
