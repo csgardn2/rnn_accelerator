@@ -10,10 +10,13 @@ heat_maps/simulation_runs/256x256_full_random_iterations00000to65535/256x256_ful
 
 # Uncompressed training data
 heat_maps/simulation_runs/2256x256_3x3_random_iterations0000to0255/*.tar
+heat_maps/simulation_runs/2256x256_3x3_random_iterations0000to0255/*.csv
 heat_maps/simulation_runs/256x256_3x3_random_iterations0000to0255/256x256_3x3_random_iterations????to????
 heat_maps/simulation_runs/256x256_full_random_iterations00000to65535/*.tar
+heat_maps/simulation_runs/256x256_full_random_iterations00000to65535/*.csv
 heat_maps/simulation_runs/256x256_full_random_iterations00000to65535/256x256_full_random_iterations?????to?????
 heat_maps/simulation_runs/256x256_full_dynamicpower_iterations0000to0255/*.tar
+heat_maps/simulation_runs/256x256_full_dynamicpower_iterations0000to0255/*.csv
 heat_maps/simulation_runs/256x256_full_dynamicpower_iterations0000to0255/256x256_full_dynamicpower_iterations????to????
 dnn/data
 dnn/log
