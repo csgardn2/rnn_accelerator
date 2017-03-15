@@ -296,6 +296,7 @@ int compute_tran_temp
     snprintf(width_str, 64, "%u", col);
     snprintf(height_str, 64, "%u", row);
     
+    unsigned previous_progress = 0;
     unsigned linear_size = col * row;
     float* host_src = new float[linear_size];
     float* host_power = new float[row * col];
@@ -361,7 +362,7 @@ int compute_tran_temp
             );
 		
 		// Print progress indicator
-		unsigned progress = t * 64 / bound;
+		unsigned progress = t * 64 / total_iterations;
 		if (progress > previous_progress)
 		{
 			for (unsigned ix = 0; ix < progress; ix++)
@@ -501,12 +502,6 @@ int main(int argc, char** argv)
     free(MatrixOut);
     
     return EXIT_SUCCESS;
-    
-}
-
-void run(int argc, char** argv)
-{
-    
     
 }
 
