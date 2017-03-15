@@ -306,11 +306,11 @@ int compute_tran_temp
         src = dst;
         dst = temp;
         
-        snprintf(iteration_str, 64, "%04u", t);
+        snprintf(iteration_str, 64, "%05u", t);
         
         // generate_power_map(&power_map_state, host_power);
         filename =
-            "../../../heat_maps/simulation_runs/256x256_full_dynamicpower_iterations0000to0255/"
+            "../../../heat_maps/simulation_runs/256x256_full_dynamicpower_iterations00000to65535/"
             "power_256x256_full_dynamicpower_iteration";
         filename += iteration_str;
         filename += ".csv";
@@ -331,11 +331,12 @@ int compute_tran_temp
                 << " elements but should contain "
                 << linear_size
                 << "\n.";
+			break;
         }
         
-        // Added this code to generate dump.  Remove if you don't need it.
+        // Dump the current temperature map to a file
         cudaMemcpy(host_src, MatrixTemp[src], linear_size * sizeof(float), cudaMemcpyDeviceToHost);
-        filename = "/home/poopslayer78/Scaffold/temperature_256x256_full_dynamicpower_";
+        filename = "/home/poopslayer78/Scaffold/temperature/temperature_256x256_full_dynamicpower_";
         filename += iteration_str;
         filename += ".csv";
         dump_full_csv_training_data(host_src, col, row, filename);
@@ -358,7 +359,24 @@ int compute_tran_temp
                 step,
                 time_elapsed
             );
-        
+		
+		// Print progress indicator
+		unsigned progress = t * 64 / bound;
+		if (progress > previous_progress)
+		{
+			for (unsigned ix = 0; ix < progress; ix++)
+				std::cout << '#';
+			for (unsigned ix = progress; ix < 63; ix++)
+				std::cout << '-';
+			std::cout
+				<< "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
+				   "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
+				   "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
+				   "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r";
+			std::cout << std::flush;
+			previous_progress = progress;
+		}
+		
     }
     
     // Added this code to generate dump.  Remove if you don't need it.
@@ -386,13 +404,8 @@ void usage(int argc, char **argv)
 
 int main(int argc, char** argv)
 {
-    printf("WG size of kernel = %d X %d\n", BLOCK_SIZE, BLOCK_SIZE);
-    run(argc,argv);
-    return EXIT_SUCCESS;
-}
 
-void run(int argc, char** argv)
-{
+    printf("WG size of kernel = %d X %d\n", BLOCK_SIZE, BLOCK_SIZE);
     
     if (argc != 7)
         usage(argc, argv);
@@ -480,12 +493,20 @@ void run(int argc, char** argv)
     printf("Ending simulation\n");
     cudaMemcpy(MatrixOut, MatrixTemp[ret], sizeof(float) * size, cudaMemcpyDeviceToHost);
 
-    writeoutput(MatrixOut,grid_rows, grid_cols, ofile);
+    writeoutput(MatrixOut, grid_rows, grid_cols, ofile);
 
     cudaFree(MatrixPower);
     cudaFree(MatrixTemp[0]);
     cudaFree(MatrixTemp[1]);
     free(MatrixOut);
+    
+    return EXIT_SUCCESS;
+    
+}
+
+void run(int argc, char** argv)
+{
+    
     
 }
 
