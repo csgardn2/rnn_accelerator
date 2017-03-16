@@ -3,7 +3,7 @@ EXENAME=hotspot
 COMPILEFLAGS=--compiler-options=-Wall,-Wextra,-Wfatal-errors -arch=sm_30 -ccbin=g++ -std=c++11
 LINKFLAGS=--compiler-options=-Wall,-Wextra,-Wfatal-errors -arch=sm_30 -ccbin=g++
 LIBS=
-ARGS=256 1 256 ../../../heat_maps/initial_conditions/random_temp_256.txt ../../../heat_maps/initial_conditions/random_power_256.txt output.txt
+ARGS=256 1 65536 ../../../heat_maps/initial_conditions/random_temp_256.txt ../../../heat_maps/initial_conditions/random_power_256.txt output.txt
 
 all: $(EXENAME)
 

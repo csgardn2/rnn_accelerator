@@ -311,7 +311,9 @@ int compute_tran_temp
         
         // generate_power_map(&power_map_state, host_power);
         filename =
-            "../../../heat_maps/simulation_runs/256x256_full_dynamicpower_iterations00000to65535/"
+            "../../../heat_maps/simulation_runs/"
+            "256x256_full_dynamicpower_iterations00000to65535/"
+            "power/"
             "power_256x256_full_dynamicpower_iteration";
         filename += iteration_str;
         filename += ".csv";
@@ -337,7 +339,12 @@ int compute_tran_temp
         
         // Dump the current temperature map to a file
         cudaMemcpy(host_src, MatrixTemp[src], linear_size * sizeof(float), cudaMemcpyDeviceToHost);
-        filename = "/home/poopslayer78/Scaffold/temperature/temperature_256x256_full_dynamicpower_";
+        filename =
+            "../../../heat_maps/simulation_runs/"
+            "256x256_full_dynamicpower_iterations00000to65535/"
+            "temperature/"
+            "temperature
+            _256x256_full_dynamicpower_iteration";
         filename += iteration_str;
         filename += ".csv";
         dump_full_csv_training_data(host_src, col, row, filename);
