@@ -25,8 +25,13 @@ class Dataset:
             in_frac: the untouched fraction of input data with size batch_size
             gold_frac: the untouched fraction of output golden data with size batch_size
         '''
+        num_data = len(self.input_data)
         self.num_touched += batch_size
-        if self.num_touched >= len(self.input_data):
+        if self.num_touched >= num_data:
+            indices_shuffle = range(num_data)
+            shuffle(indices_shuffle)
+            self.input_data = [ self.input_data[i] for i in indices_shuffle ]
+            self.golden_data = [ self.golden_data[i] for i in indices_shuffle ]
             self.num_touched = batch_size
         in_frac = self.input_data[self.num_touched-batch_size:self.num_touched]
         gold_frac = self.golden_data[self.num_touched-batch_size:self.num_touched]
@@ -100,7 +105,7 @@ class Datasets:
 
         if not separate:
             # import input file
-            inFile = open(data_dir+"input_"+tile_size_str+"x"+tile_size_str+"_"+num_maps_str+"maps.txt")
+            inFile = open(data_dir+"input_"+tile_size_str+"x"+tile_size_str+"_"+num_maps_str+"maps_dynamic.txt")
             num_in = int(inFile.readline())
             input_data = [ [type_in(i) for i in inputs.strip().split(' ')]
                     for inputs in inFile.readlines() ]
@@ -112,7 +117,7 @@ class Datasets:
             #print "num_in"
             #print num_in
             # import golden file
-            goldFile = open(data_dir+"golden_"+tile_size_str+"x"+tile_size_str+"_"+num_maps_str+"maps.txt")
+            goldFile = open(data_dir+"golden_"+tile_size_str+"x"+tile_size_str+"_"+num_maps_str+"maps_dynamic.txt")
             num_gold = int(goldFile.readline())
             golden_data = [ [type_gold(i) for i in goldens.strip().split(' ')]
                     for goldens in goldFile.readlines() ]
@@ -121,22 +126,24 @@ class Datasets:
             #debug
             #print "num_gold"
             #print num_gold
+            '''
             # shuffle
             assert(num_in == num_gold)
             indices_shuffle = range(num_in)
             shuffle(indices_shuffle)
             input_shuffle = [ input_data[i] for i in indices_shuffle ]
             golden_shuffle = [ golden_data[i] for i in indices_shuffle ]
+            '''
             # separate the data into train, validate, and test
             train_size = int(float(num_in) * 0.7)
             validate_size = int(float(num_in) * 0.2)
             test_offset = train_size + validate_size
-            self.train = Dataset(input_shuffle[0:train_size],
-                    golden_shuffle[0:train_size])
-            self.validate = Dataset(input_shuffle[train_size:test_offset],
-                    golden_shuffle[train_size:test_offset])
-            self.test = Dataset(input_shuffle[test_offset:-1],
-                    golden_shuffle[test_offset:-1])
+            self.train = Dataset(input_data[0:train_size],
+                    golden_data[0:train_size])
+            self.validate = Dataset(input_data[train_size:test_offset],
+                    golden_data[train_size:test_offset])
+            self.test = Dataset(input_data[test_offset:-1],
+                    golden_data[test_offset:-1])
         else:
             ### training data ###
             # import input file

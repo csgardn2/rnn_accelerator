@@ -13,7 +13,7 @@ import hotspot.hotspot as bm # TODO
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
-flags.DEFINE_float('learning_rate', 0.0001, 'learning rate')
+flags.DEFINE_float('learning_rate', 0.02, 'learning rate')
 flags.DEFINE_integer('batch_size', 100, 'batch size')
 flags.DEFINE_integer('max_steps', 9100, 'max training steps')
 flags.DEFINE_integer('hidden1',
@@ -21,7 +21,7 @@ flags.DEFINE_integer('hidden1',
 flags.DEFINE_integer('hidden2',
         0, 'number of layers in hidden layer 2')
 flags.DEFINE_string('data_dir',
-        '/home/cosine/research/rnn_accelerator/dnn/hotspot/data/', 'data directory')
+        '/home/cosine/research/rnn_accelerator/dnn/data/hotspot/', 'data directory')
 flags.DEFINE_string('input_data_type',
         'float', 'input data type: float or int')
 flags.DEFINE_string('output_data_type',
@@ -29,7 +29,7 @@ flags.DEFINE_string('output_data_type',
 flags.DEFINE_bool('separate_file',
         False, 'indicates whether training, validation, testing data are in separate files')
 flags.DEFINE_string('log_dir',
-        '/home/cosine/research/rnn_accelerator/dnn/hotspot/log', 'directory to put the log data')
+        '/home/cosine/research/rnn_accelerator/dnn/log/hotspot/', 'directory to put the log data')
 #for hotspot training
 flags.DEFINE_string('tile_size',
         1, 'tile size')
