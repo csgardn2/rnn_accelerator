@@ -289,17 +289,17 @@ int compute_tran_temp
     int src = 1;
     int dst = 0;
     
-    std::string filename;
-    char iteration_str[64];
-    char width_str[64];
-    char height_str[64];
-    snprintf(width_str, 64, "%u", col);
-    snprintf(height_str, 64, "%u", row);
+//    std::string filename;
+//    char iteration_str[64];
+//    char width_str[64];
+//    char height_str[64];
+//    snprintf(width_str, 64, "%u", col);
+//    snprintf(height_str, 64, "%u", row);
     
-    unsigned previous_progress = 0;
-    unsigned linear_size = col * row;
-    float* host_src = new float[linear_size];
-    float* host_power = new float[row * col];
+//    unsigned previous_progress = 0;
+//    unsigned linear_size = col * row;
+//    float* host_src = new float[linear_size];
+//    float* host_power = new float[linear_size];
     for (int t = 0; t < total_iterations; t += num_iterations)
     {
         
@@ -307,47 +307,47 @@ int compute_tran_temp
         src = dst;
         dst = temp;
         
-        snprintf(iteration_str, 64, "%05u", t);
-        
-        // generate_power_map(&power_map_state, host_power);
-        filename =
-            "../../../heat_maps/simulation_runs/"
-            "256x256_full_dynamicpower_iterations00000to65535/"
-            "power/"
-            "power_256x256_full_dynamicpower_iteration";
-        filename += iteration_str;
-        filename += ".csv";
-        std::ifstream power_file(filename);
-        unsigned power_size;
-        power_file >> power_size;
-        if (power_size == linear_size)
-        {
-            for (unsigned ix = 0; ix < linear_size; ix++)
-                power_file >> host_power[ix];
-            cudaMemcpy(MatrixPower, host_power, linear_size * sizeof(float), cudaMemcpyHostToDevice);
-        } else {
-            std::cout
-                << "Error.  File \""
-                << filename
-                << "\" contains "
-                << power_size
-                << " elements but should contain "
-                << linear_size
-                << "\n.";
-			break;
-        }
+//        snprintf(iteration_str, 64, "%05u", t);
+//        
+//        // generate_power_map(&power_map_state, host_power);
+//        filename =
+//            "../../../heat_maps/simulation_runs/"
+//            "256x256_full_dynamicpower_iterations00000to65535/"
+//            "power/"
+//            "power_256x256_full_dynamicpower_iteration";
+//        filename += iteration_str;
+//        filename += ".csv";
+//        std::ifstream power_file(filename);
+//        unsigned power_size;
+//        power_file >> power_size;
+//        if (power_size == linear_size)
+//        {
+//            for (unsigned ix = 0; ix < linear_size; ix++)
+//                power_file >> host_power[ix];
+//            cudaMemcpy(MatrixPower, host_power, linear_size * sizeof(float), cudaMemcpyHostToDevice);
+//        } else {
+//            std::cout
+//                << "Error.  File \""
+//                << filename
+//                << "\" contains "
+//                << power_size
+//                << " elements but should contain "
+//                << linear_size
+//                << "\n.";
+//            break;
+//        }
         
         // Dump the current temperature map to a file
-        cudaMemcpy(host_src, MatrixTemp[src], linear_size * sizeof(float), cudaMemcpyDeviceToHost);
-        filename =
-            "../../../heat_maps/simulation_runs/"
-            "256x256_full_dynamicpower_iterations00000to65535/"
-            "temperature/"
-            "temperature
-            _256x256_full_dynamicpower_iteration";
-        filename += iteration_str;
-        filename += ".csv";
-        dump_full_csv_training_data(host_src, col, row, filename);
+//        cudaMemcpy(host_src, MatrixTemp[src], linear_size * sizeof(float), cudaMemcpyDeviceToHost);
+//        filename =
+//            "../../../heat_maps/simulation_runs/"
+//            "256x256_full_dynamicpower_iterations00000to65535/"
+//            "temperature/"
+//            "temperature
+//            _256x256_full_dynamicpower_iteration";
+//        filename += iteration_str;
+//        filename += ".csv";
+//        dump_full_csv_training_data(host_src, col, row, filename);
         
         calculate_temp
             <<<dimGrid, dimBlock>>>
@@ -367,29 +367,29 @@ int compute_tran_temp
                 step,
                 time_elapsed
             );
-		
-		// Print progress indicator
-		unsigned progress = t * 64 / total_iterations;
-		if (progress > previous_progress)
-		{
-			for (unsigned ix = 0; ix < progress; ix++)
-				std::cout << '#';
-			for (unsigned ix = progress; ix < 63; ix++)
-				std::cout << '-';
-			std::cout
-				<< "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
-				   "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
-				   "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
-				   "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r";
-			std::cout << std::flush;
-			previous_progress = progress;
-		}
-		
+        
+        // Print progress indicator
+//        unsigned progress = t * 64 / total_iterations;
+//        if (progress > previous_progress)
+//        {
+//            for (unsigned ix = 0; ix < progress; ix++)
+//                std::cout << '#';
+//            for (unsigned ix = progress; ix < 63; ix++)
+//                std::cout << '-';
+//            std::cout
+//                << "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
+//                "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
+//                "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r"
+//                "\r\r\r\r\r\r\r\r\r\r\r\r\r\r\r";
+//            std::cout << std::flush;
+//            previous_progress = progress;
+//        }
+//        
     }
     
     // Added this code to generate dump.  Remove if you don't need it.
-    delete[] host_src;
-    delete[] host_power;
+//    delete[] host_src;
+//    delete[] host_power;
     
     return dst;
     
