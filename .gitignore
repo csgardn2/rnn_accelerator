@@ -49,7 +49,8 @@ tensorflow/rnn_basic/gold_code/training_data_generator
 tensorflow/mnist/neural_code/*.o
 
 # Python junk
-tensorflow/hotspot/rnn_neural_code/__pycache__
+*__pycache__*
+
 
 # Other junk
 tensorflow/hotspot/gold_code/output.txt
