@@ -27,30 +27,28 @@ heat_maps/simulation_runs/256x256_full_dynamicpower_iterations00000to65535/*.tar
 heat_maps/simulation_runs/256x256_full_dynamicpower_iterations00000to65535/*.csv
 heat_maps/simulation_runs/256x256_full_dynamicpower_iterations00000to65535/256x256_full_dynamicpower_iterations?????to?????
 heat_maps/simulation_runs/256x256_full_dynamicpower_iterations0000to0255/256x256_full_dynamicpower_iterations0000to0031/
+code/tensorflow/input_functions.py
+code/tensorflow/output_coefficients.py
 dnn/data
 dnn/log
 dnn/fft
 
 # Executable/Binary compiler outputs
-heat_visualizer/*.o
+*.o
 heat_visualizer/heat_visualizer
-power_map_generator/*.o
-power_map_generator/*.txt
-power_map_generator/*.png
 power_map_generator/power_map_generator
-tensorflow/gradient/gold_code/*.o
 tensorflow/gradient/gold_code/gradient
-tensorflow/histogram/gold_code/*.o
 tensorflow/histogram/gold_code/training_data_generator
-tensorflow/hotspot/gold_code/*.o
 tensorflow/hotspot/gold_code/hotspot
-tensorflow/rnn_basic/gold_code/*.o
 tensorflow/rnn_basic/gold_code/training_data_generator
-tensorflow/mnist/neural_code/*.o
+tensorflow/fourier/gold_code/fourier
 
 # Python junk
 *__pycache__*
+*.pyc
 
+# Auto-generated documentation.  Re-run doxygen on the source code to get this
+*/html
 
 # Other junk
 tensorflow/hotspot/gold_code/output.txt
