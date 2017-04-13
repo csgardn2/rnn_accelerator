@@ -29,6 +29,9 @@ heat_maps/simulation_runs/256x256_full_dynamicpower_iterations00000to65535/256x2
 heat_maps/simulation_runs/256x256_full_dynamicpower_iterations0000to0255/256x256_full_dynamicpower_iterations0000to0031/
 tensorflow/fourier/gold_code/input_functions.py
 tensorflow/fourier/gold_code/output_coefficients.py
+tensorflow/fourier/gold_code/input_functions.pyc
+tensorflow/fourier/gold_code/output_coefficients.pyc
+tensorflow/fourier/neural_code/dataset
 dnn/data
 dnn/log
 dnn/fft
