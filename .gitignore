@@ -27,8 +27,8 @@ heat_maps/simulation_runs/256x256_full_dynamicpower_iterations00000to65535/*.tar
 heat_maps/simulation_runs/256x256_full_dynamicpower_iterations00000to65535/*.csv
 heat_maps/simulation_runs/256x256_full_dynamicpower_iterations00000to65535/256x256_full_dynamicpower_iterations?????to?????
 heat_maps/simulation_runs/256x256_full_dynamicpower_iterations0000to0255/256x256_full_dynamicpower_iterations0000to0031/
-code/tensorflow/input_functions.py
-code/tensorflow/output_coefficients.py
+tensorflow/fourier/gold_code/input_functions.py
+tensorflow/fourier/gold_code/output_coefficients.py
 dnn/data
 dnn/log
 dnn/fft
