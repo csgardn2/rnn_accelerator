@@ -42,7 +42,7 @@ def main(_):
         [None, samples_per_function]
     )
     
-    neural_outputs = fourier_softsign_graph(
+    neural_outputs = fourier_relu_graph(
         neural_inputs,
         samples_per_function,
         coefficients_per_function
@@ -108,7 +108,7 @@ def main(_):
         batch_data = {neural_inputs : batch_inputs, answers : batch_answers}
         session.run(train_step, batch_data)
         
-        if (ix % 100 == 0):
+        if (ix % 500 == 0):
             reduced_error = session.run(mean_error, batch_data)
             print("Batch {}/{} Mean Error = {}".format(ix, num_batches, reduced_error))
         

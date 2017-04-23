@@ -36,8 +36,8 @@ def fourier_relu_graph(neural_inputs, samples_per_function, coefficients_per_fun
     # Layer 3
     # Input dimensions = [None, 512]
     # Output dimesnions = [None, coefficients_per_function]
-    neural_weights_3 = tensorflow.Variable(tensorflow.zeros([512, 512]))
-    neural_biases_3 = tensorflow.Variable(tensorflow.zeros([1, 512]))
+    neural_weights_3 = tensorflow.Variable(tensorflow.zeros([512, coefficients_per_function]))
+    neural_biases_3 = tensorflow.Variable(tensorflow.zeros([1, coefficients_per_function]))
     neural_outputs_3 = tensorflow.add(
         tensorflow.matmul(
             neural_outputs_2,
@@ -46,24 +46,6 @@ def fourier_relu_graph(neural_inputs, samples_per_function, coefficients_per_fun
         neural_biases_3
     )
     
-    # Layer 4
-    # Input dimensions = [None, 512]
-    # Output dimesnions = [None, 512]
-    neural_outputs_4 = tensorflow.nn.relu(neural_outputs_3)
-    
-    # Layer 5
-    # Input dimensions = [None, 512]
-    # Output dimesnions = [None, coefficients_per_function]
-    neural_weights_5 = tensorflow.Variable(tensorflow.zeros([512, coefficients_per_function]))
-    neural_biases_5 = tensorflow.Variable(tensorflow.zeros([1, coefficients_per_function]))
-    neural_outputs_5 = tensorflow.add(
-        tensorflow.matmul(
-            neural_outputs_4,
-            neural_weights_5
-        ),
-        neural_biases_5
-    )
-    
-    return neural_outputs_5
+    return neural_outputs_3
     
 
